@@ -2,6 +2,19 @@
 
 一个零依赖的 HTML5 Canvas 飞机射击小游戏。支持电脑键盘和手机触控，采用中文界面，源码以 MIT 协议开放。
 
+## Android 安装包
+
+[下载雷霆空战 APK v1.0.0](https://github.com/Ashura-ohma/sky-strike/raw/refs/heads/main/downloads/sky-strike-1.0.0.apk)
+
+Android 8.0 及以上，需要保持更新的 Android System WebView。下载后打开 APK，按系统安装流程操作。若系统阻止安装，请先查看提示，不要关闭 Play Protect 等安全检查。
+
+完全离线、无需登录、没有广告、不申请任何权限。安装后点「开始飞行」，在战场内按住拖动，自动射击。切到后台自动暂停；点「继续飞行」恢复。
+
+这是开发证书签名的独立安装包，非商店发行版。已验证 APK 签名、文件完整性和游戏逻辑，尚未进行安卓真机/模拟器启动测试。
+
+- [Android 源码和构建说明](android/README.md)
+- [APK 校验值与版本说明](downloads/README.md)
+
 ## 开始游戏
 
 需要 Python 3；测试需要 Node.js 18+。无需安装 npm 依赖。
