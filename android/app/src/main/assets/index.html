@@ -18,26 +18,26 @@
 </defs></svg>
 <canvas id="world"></canvas><canvas id="bars"></canvas><div id="vignette"></div>
 <section id="lobby" class="screen">
- <header class="lobby-top"><div class="brand"><span class="brand-mark">✦</span><div>逐风<span>HEROES OF THE RIFT</span></div></div><div class="version"><i></i> 离线战境 <b>3D / V2</b></div></header>
- <div class="hero-copy"><div class="eyebrow">选择你的英雄 <span>01 / 03</span></div><h1 id="heroName">苍岚</h1><h2 id="heroTitle">逐风剑士</h2><p id="heroStory">剑锋所指，长风不息。穿梭战场，斩开敌方阵线。</p><div id="heroRole" class="role">近战 / 突进</div><div class="hero-skills" id="heroSkills"></div><div class="hero-stats" id="heroStats"></div></div>
- <div class="hero-picker" id="heroPicker"></div>
- <div class="match-card"><div class="eyebrow">经典战境 <span>5 vs 5</span></div><h3>三路争锋</h3><p>电脑队友 · 推线推塔 · 装备成长</p><button id="start" class="gold-button">进入战场 <span>→</span></button><small>单机离线 · 原创英雄与地图</small></div>
- <div class="lobby-foot">VERSION 0.2 <span>推荐横屏 · 摇杆移动 / 技能拖动瞄准</span></div>
+ <header class="lobby-top"><div class="brand"><span class="brand-mark">✦</span><div>逐风<span>HEROES OF THE RIFT</span></div></div><div class="version"><i></i> 离线战境 <b>3D / V3</b></div></header>
+ <div class="hero-copy"><div class="eyebrow">选择你的英雄 <span>六位英雄</span></div><h1 id="heroName">苍岚</h1><h2 id="heroTitle">逐风剑士</h2><p id="heroStory">剑锋所指，长风不息。穿梭战场，斩开敌方阵线。</p><div id="heroRole" class="role">近战 / 突进</div><div class="hero-skills" id="heroSkills"></div><div class="hero-stats" id="heroStats"></div></div>
+ <div class="hero-picker" id="heroPicker"></div><div class="lobby-menu"><button id="codexBtn">英雄图鉴</button><button id="careerBtn">战绩与成长</button><button id="wardrobeBtn">英雄配色</button></div>
+ <div class="match-card"><div class="eyebrow">经典战境 <span>5 vs 5</span></div><h3>三路争锋</h3><p>六位英雄 · 野区争夺 · 进阶装备</p><div class="match-options"><select id="difficulty" aria-label="对局难度"><option value="easy">休闲对局</option><option value="normal" selected>标准对局</option><option value="hard">挑战对局</option><option value="training">自由练习</option></select><button id="runeBtn">符文：均衡</button></div><button id="start" class="gold-button">进入战场 <span>→</span></button><small><span id="careerSummary">旅者 1 级 · 120 星币</span></small></div>
+ <div class="lobby-foot">VERSION 0.3 <span>推荐横屏 · 摇杆移动 / 技能拖动瞄准</span></div>
 </section>
 <section id="hud" class="screen hidden">
  <div class="map-frame"><canvas id="minimap" width="180" height="180"></canvas><span>逐风峡谷</span></div>
  <div class="top-score"><strong id="blueScore">0</strong><span>VS</span><strong id="redScore">0</strong><div id="clock">00:00</div></div>
- <div class="top-right"><span id="kda">0 / 0 / 0</span><button id="pauseBtn" class="tiny-button" aria-label="暂停"></button></div>
+ <div class="top-right"><span id="kda">0 / 0 / 0</span><button id="scoreBtn" class="tiny-button" aria-label="战况">表</button><button id="commandBtn" class="tiny-button" aria-label="队伍指令">旗</button><button id="pauseBtn" class="tiny-button" aria-label="暂停"></button></div>
  <div id="killfeed"></div><div id="announcement" class="hidden"></div>
  <div class="player-panel"><div id="heroBadge" class="hero-badge"></div><div class="player-bars"><div class="player-name"><span id="playerName">苍岚</span><b id="level">1</b></div><div class="meter hp"><i id="hpFill"></i><span id="hpText"></span></div><div class="meter mana"><i id="manaFill"></i></div><div class="xp-line"><i id="xpFill"></i></div></div></div>
  <button id="shopBtn" class="shop-button"><span id="shopIcon"></span><b id="gold">450</b><small>装备</small></button>
- <div id="inventory" class="inventory"></div>
+ <div id="inventory" class="inventory"></div><button id="objectiveBtn" class="objective-button">远古龙王 01:05</button><div id="buffs"></div>
  <div id="joystick" class="joystick"><div class="joy-rim"></div><div id="joyKnob"></div><span>移动</span></div>
  <div class="utility"><button id="recallBtn" aria-label="回城"></button><button id="healBtn" aria-label="恢复"></button></div>
  <div id="cancelAim" class="hidden">移到这里取消施法</div>
- <div class="combat"><button id="attackBtn" class="attack-button" aria-label="持续普攻"><span id="attackIcon"></span><small>普攻</small></button><div id="skillButtons"></div></div>
+ <div class="combat"><button id="attackBtn" class="attack-button" aria-label="持续普攻"><span id="attackIcon"></span><small>普攻</small></button><div id="skillButtons"></div><div id="upgradeButtons"></div></div>
  <div id="deathOverlay" class="hidden"><b>正在重整旗鼓</b><span>复活倒计时 <strong id="respawn">10</strong> 秒</span><small>可在等待期间购买装备</small></div>
- <div id="tutorial"><b>跟随兵线推进</b><span>左侧摇杆移动 · 按住普攻追击 · 拖动技能瞄准</span><button id="dismissTutorial">知道了</button></div>
+ <div id="tutorial"><b>跟随兵线推进</b><span>左侧摇杆移动 · 按住普攻追击 · 拖动技能瞄准 · 升级后点击技能旁的 +</span><button id="dismissTutorial">知道了</button></div>
 </section>
 <div id="modal" class="modal hidden"><div id="modalContent" class="modal-card"></div></div>
 <div id="toast" class="hidden"></div><div id="portrait">请横屏游玩<span>旋转手机，进入逐风战境</span></div>

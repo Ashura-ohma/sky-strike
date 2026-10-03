@@ -42,6 +42,7 @@ public final class MainActivity extends Activity {
                 if (response != null && path != null && (path.endsWith(".mjs") || path.endsWith(".js"))) {
                     response.setMimeType("text/javascript");
                 }
+                if (response != null && path != null && path.endsWith(".ogg")) response.setMimeType("audio/ogg");
                 return response;
             }
 

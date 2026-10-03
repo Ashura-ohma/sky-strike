@@ -1,9 +1,9 @@
 {
   "name": "zhufeng-moba-offline",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "serve": "python3 -m http.server 8080 --directory android/app/src/main/assets"
+    "serve": "python3 scripts/prepare_assets.py && python3 -m http.server 8080 --directory android/app/src/main/assets"
   }
 }

@@ -24,8 +24,14 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
+      - name: Prepare bundled art
+        run: python3 scripts/prepare_assets.py
       - name: Run game logic tests
         run: node --test tests/*.test.js
+      - uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: zhufeng-v3-debug-signing-v1
       - name: Build debug APK
         working-directory: android
         run: gradle --no-daemon assembleDebug

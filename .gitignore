@@ -8,3 +8,5 @@ android/build/
 *.keystore
 local.properties
 .DS_Store
+
+android/app/src/main/assets/art/heroes-atlas.png
