@@ -13,6 +13,7 @@
   };
   let dpr = 1, scale = 1, offsetX = 0, offsetY = 0, last = 0, toastTimer = 0;
   let state;
+  let paused = false;
   const input = { x: 0, y: 0, attack: false };
   const colors = { blue: "#54d7df", red: "#fb7185", gold: "#ffd282", text: "#f3fff5" };
 
@@ -34,6 +35,7 @@
       minions: [], spawn: 0, allySpawn: 0, towerFire: 0, flash: 0, hitText: 0
     };
     for (let i=0;i<3;i++) { state.minions.push(makeMinion("red", W/2+(i-1)*28, 380+i*20)); state.minions.push(makeMinion("blue", W/2+(i-1)*28, 650+i*18)); }
+    paused = false;
     input.x = input.y = 0; input.attack = false;
     ui.start.classList.add("hidden"); ui.end.classList.add("hidden");
     showToast("击破防御塔，摧毁敌方水晶！");
@@ -65,20 +67,20 @@
     if (target === state.base && target.hp === 0) finish(true);
   }
   function castQ() {
-    if (state.mode!=="playing" || state.player.q>0) return;
+    if (!state || paused || state.mode!=="playing" || state.player.q>0) return;
     state.player.q=5;
     const candidates = enemies().filter(e => e.hp>0 && inRange(state.player,e,260)).sort((a,b)=>distance(state.player,a)-distance(state.player,b));
     if (candidates.length) { hit(candidates[0],34); showToast("星火命中！"); } else showToast("附近没有可命中的目标");
   }
   function castR() {
-    if (state.mode!=="playing" || state.player.r>0) return;
+    if (!state || paused || state.mode!=="playing" || state.player.r>0) return;
     state.player.r=14; const p=state.player; let hits=0;
     for (const e of enemies()) if (e.hp>0 && inRange(p,e,175)) { hit(e,48); hits++; }
     showToast(hits ? `星陨奥义命中 ${hits} 个目标` : "星陨奥义释放！");
   }
 
   function update(dt) {
-    if (!state || state.mode!=="playing") return;
+    if (!state || paused || state.mode!=="playing") return;
     state.time+=dt; state.flash=Math.max(0,state.flash-dt); const p=state.player;
     p.x=clamp(p.x+input.x*190*dt,105,375);
     p.y=clamp(p.y+input.y*190*dt,state.tower.hp>0?245:105,690);
@@ -166,12 +168,16 @@
   buttonHold(ui.attack,()=>{input.attack=true;ui.attack.classList.add("pressed");},()=>{input.attack=false;ui.attack.classList.remove("pressed");});
   ui.q.addEventListener("pointerdown",e=>{e.preventDefault();castQ();});ui.r.addEventListener("pointerdown",e=>{e.preventDefault();castR();});
   let stickPointer=null;
-  function setStick(e){const r=ui.joystick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,dx=e.clientX-cx,dy=e.clientY-cy,len=Math.max(1,Math.hypot(dx,dy)),max=r.width*.34,k=Math.min(1,max/len);input.x=dx/len*k;input.y=dy/len*k;ui.stick.style.transform=`translate(calc(-50% + ${input.x*max}px),calc(-50% + ${input.y*max}px))`;}
+  function setStick(e){const r=ui.joystick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,dx=e.clientX-cx,dy=e.clientY-cy,len=Math.max(1,Math.hypot(dx,dy)),max=r.width*.34,k=Math.min(1,len/max);input.x=dx/len*k;input.y=dy/len*k;ui.stick.style.transform=`translate(calc(-50% + ${input.x*max}px),calc(-50% + ${input.y*max}px))`;}
   ui.joystick.addEventListener("pointerdown",e=>{e.preventDefault();stickPointer=e.pointerId;ui.joystick.setPointerCapture(e.pointerId);setStick(e);});
   ui.joystick.addEventListener("pointermove",e=>{if(stickPointer===e.pointerId)setStick(e);});
   function resetStick(){stickPointer=null;input.x=input.y=0;ui.stick.style.transform="translate(-50%,-50%)";}
   ui.joystick.addEventListener("pointerup",resetStick);ui.joystick.addEventListener("pointercancel",resetStick);
   window.addEventListener("keydown",e=>{if(e.key.toLowerCase()==="q")castQ();if(e.key.toLowerCase()==="r")castR();if(e.code==="Space")input.attack=true;if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")input.x=-1;if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")input.x=1;if(e.key==="ArrowUp"||e.key.toLowerCase()==="w")input.y=-1;if(e.key==="ArrowDown"||e.key.toLowerCase()==="s")input.y=1;});
-  window.addEventListener("keyup",e=>{if(e.code==="Space")input.attack=false;if(["ArrowLeft","ArrowRight","a","d"].includes(e.key))input.x=0;if(["ArrowUp","ArrowDown","w","s"].includes(e.key.toLowerCase()))input.y=0;});
-  document.addEventListener("visibilitychange",()=>{if(document.hidden)input.attack=false;});
+  window.addEventListener("keyup",e=>{if(e.code==="Space")input.attack=false;if(["ArrowLeft","ArrowRight","a","d"].includes(e.key))input.x=0;if(["arrowup","arrowdown","w","s"].includes(e.key.toLowerCase()))input.y=0;});
+  function pauseGame() { paused=true; input.attack=false; resetStick(); ui.attack.classList.remove("pressed"); }
+  function resumeGame() { paused=false; last=performance.now(); }
+  document.addEventListener("visibilitychange",()=>{if(document.hidden)pauseGame();else resumeGame();});
+  window.addEventListener("moba-pause",pauseGame);
+  window.addEventListener("moba-resume",resumeGame);
 })();

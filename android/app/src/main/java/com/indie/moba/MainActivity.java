@@ -1,6 +1,7 @@
 package com.indie.moba;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -46,6 +47,16 @@ public final class MainActivity extends Activity {
         webView.loadUrl("https://appassets.androidplatform.net/assets/index.html");
     }
 
+    private void resumeGame() {
+        hideSystemUi();
+        if (webView != null) webView.evaluateJavascript("window.dispatchEvent(new Event('moba-resume'))", null);
+    }
+
+    @Override protected void onDestroy() {
+        if (webView != null) { webView.destroy(); webView = null; }
+        super.onDestroy();
+    }
+
     private void hideSystemUi() {
         Window window = getWindow();
         window.getDecorView().setSystemUiVisibility(
@@ -57,13 +68,28 @@ public final class MainActivity extends Activity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
-    @Override protected void onResume() { super.onResume(); if (webView != null) webView.onResume(); }
-    @Override protected void onPause() { if (webView != null) webView.onPause(); super.onPause(); }
+    @Override protected void onResume() {
+        super.onResume();
+        if (webView != null) {
+            webView.resumeTimers(); webView.onResume();
+            webView.evaluateJavascript("window.dispatchEvent(new Event('moba-resume'))", null);
+        }
+    }
+    @Override protected void onPause() {
+        if (webView != null) {
+            webView.evaluateJavascript("window.dispatchEvent(new Event('moba-pause'))", null);
+            webView.onPause(); webView.pauseTimers();
+        }
+        super.onPause();
+    }
 
     @Override
     public void onBackPressed() {
-        if (webView != null) webView.evaluateJavascript(
-                "document.dispatchEvent(new Event('visibilitychange'))", null);
-        hideSystemUi();
+        if (webView != null) webView.evaluateJavascript("window.dispatchEvent(new Event('moba-pause'))", null);
+        new AlertDialog.Builder(this).setTitle("退出逐风战线？")
+            .setMessage("当前对局不会保存。")
+            .setPositiveButton("退出", (dialog, which) -> finish())
+            .setNegativeButton("继续游戏", (dialog, which) -> resumeGame())
+            .setOnCancelListener(dialog -> resumeGame()).show();
     }
 }

@@ -34,3 +34,5 @@ button { border: 0; color: white; font: inherit; cursor: pointer; touch-action: 
 .toast { position: absolute; z-index: 3; left: 50%; top: 25%; transform: translate(-50%,-10px); padding: 8px 16px; border-radius: 20px; color: #ecfff9; background: #05151bdd; opacity: 0; transition: .2s; pointer-events: none; font-size: 13px; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translate(-50%,0); }
 @media (min-aspect-ratio: 7/10) { #game-shell { max-width: 560px; } }
+
+@media(max-width:390px){.controls{padding:0 12px}.joystick{width:96px;height:96px}.action-buttons{gap:6px}.skill{width:47px;height:47px}.attack{width:60px;height:60px}}
