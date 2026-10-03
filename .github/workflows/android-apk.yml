@@ -30,8 +30,14 @@ jobs:
         run: node --test tests/*.test.js
       - uses: actions/cache@v4
         with:
-          path: ~/.android/debug.keystore
-          key: zhufeng-v3-debug-signing-v1
+          path: .signing/debug.keystore
+          key: zhufeng-v4-debug-signing-v1
+      - name: Prepare cached debug signing key
+        run: |
+          mkdir -p .signing
+          if [ ! -f .signing/debug.keystore ]; then
+            keytool -genkeypair -keystore .signing/debug.keystore -alias androiddebugkey -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US" -keyalg RSA -keysize 2048 -validity 10000
+          fi
       - name: Build debug APK
         working-directory: android
         run: gradle --no-daemon assembleDebug

@@ -5,11 +5,21 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.indie.moba.zhufeng.v3"
+        applicationId = "com.indie.moba.zhufeng.v4"
         minSdk = 26
         targetSdk = 34
         versionCode = 4
         versionName = "0.4.0"
+    }
+
+    signingConfigs.getByName("debug") {
+        val cachedKey = rootProject.file("../.signing/debug.keystore")
+        if (cachedKey.exists()) {
+            storeFile = cachedKey
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
     }
 }
 

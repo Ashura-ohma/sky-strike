@@ -6,6 +6,7 @@ android/build/
 *.aab
 *.jks
 *.keystore
+.signing/
 local.properties
 .DS_Store
 
