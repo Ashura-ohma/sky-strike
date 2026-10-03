@@ -1,0 +1,531 @@
+{
+  "source": "Swat.fbx",
+  "objects": [
+    {
+      "name": "CharacterArmature",
+      "type": "ARMATURE",
+      "dimensions": [
+        0.7964767813682556,
+        0.9765042066574097,
+        2.536226272583008
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "bones": [
+        "Root",
+        "Body",
+        "Hips",
+        "Abdomen",
+        "Torso",
+        "Chest",
+        "Neck",
+        "Head",
+        "Head_end",
+        "Shoulder.L",
+        "UpperArm.L",
+        "LowerArm.L",
+        "Wrist.L",
+        "Index1.L",
+        "Index2.L",
+        "Index3.L",
+        "Index4.L",
+        "Index4.L_end",
+        "Middle1.L",
+        "Middle2.L",
+        "Middle3.L",
+        "Middle4.L",
+        "Middle4.L_end",
+        "Ring1.L",
+        "Ring2.L",
+        "Ring3.L",
+        "Ring4.L",
+        "Ring4.L_end",
+        "Pinky1.L",
+        "Pinky2.L",
+        "Pinky3.L",
+        "Pinky4.L",
+        "Pinky4.L_end",
+        "Thumb1.L",
+        "Thumb2.L",
+        "Thumb3.L",
+        "Thumb3.L_end",
+        "Shoulder.R",
+        "UpperArm.R",
+        "LowerArm.R",
+        "Wrist.R",
+        "Index1.R",
+        "Index2.R",
+        "Index3.R",
+        "Index4.R",
+        "Index4.R_end",
+        "Middle1.R",
+        "Middle2.R",
+        "Middle3.R",
+        "Middle4.R",
+        "Middle4.R_end",
+        "Ring1.R",
+        "Ring2.R",
+        "Ring3.R",
+        "Ring4.R",
+        "Ring4.R_end",
+        "Pinky1.R",
+        "Pinky2.R",
+        "Pinky3.R",
+        "Pinky4.R",
+        "Pinky4.R_end",
+        "Thumb1.R",
+        "Thumb2.R",
+        "Thumb3.R",
+        "Thumb3.R_end",
+        "UpperLeg.L",
+        "LowerLeg.L",
+        "LowerLeg.L_end",
+        "UpperLeg.R",
+        "LowerLeg.R",
+        "LowerLeg.R_end",
+        "Foot.L",
+        "Foot.L_end",
+        "PT.L",
+        "PT.L_end",
+        "Foot.R",
+        "Foot.R_end",
+        "PT.R",
+        "PT.R_end"
+      ]
+    },
+    {
+      "name": "Swat_Body",
+      "type": "MESH",
+      "dimensions": [
+        0.5853011608123779,
+        0.35322999954223633,
+        0.8132803440093994
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "vertices": 1555,
+      "triangles": 3106,
+      "vertex_groups": [
+        "Body",
+        "Hips",
+        "Abdomen",
+        "Torso",
+        "Chest",
+        "Neck",
+        "Shoulder.L",
+        "UpperArm.L",
+        "LowerArm.L",
+        "Wrist.L",
+        "Index1.L",
+        "Index2.L",
+        "Index3.L",
+        "Index4.L",
+        "Middle1.L",
+        "Middle2.L",
+        "Middle3.L",
+        "Middle4.L",
+        "Ring1.L",
+        "Ring2.L",
+        "Ring3.L",
+        "Ring4.L",
+        "Pinky1.L",
+        "Pinky2.L",
+        "Pinky3.L",
+        "Pinky4.L",
+        "Thumb1.L",
+        "Thumb2.L",
+        "Thumb3.L",
+        "Shoulder.R",
+        "UpperArm.R",
+        "LowerArm.R",
+        "Wrist.R",
+        "Index1.R",
+        "Index2.R",
+        "Index3.R",
+        "Index4.R",
+        "Middle1.R",
+        "Middle2.R",
+        "Middle3.R",
+        "Middle4.R",
+        "Ring1.R",
+        "Ring2.R",
+        "Ring3.R",
+        "Ring4.R",
+        "Pinky1.R",
+        "Pinky2.R",
+        "Pinky3.R",
+        "Pinky4.R",
+        "Thumb1.R",
+        "Thumb2.R",
+        "Thumb3.R",
+        "UpperLeg.L",
+        "UpperLeg.R"
+      ],
+      "weighted_vertices": 1555,
+      "modifiers": [
+        "ARMATURE"
+      ],
+      "materials": [
+        "Swat",
+        "Swat_Black",
+        "Skin"
+      ]
+    },
+    {
+      "name": "Swat_Feet",
+      "type": "MESH",
+      "dimensions": [
+        0.4449478089809418,
+        0.6339829564094543,
+        0.2931481897830963
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "vertices": 284,
+      "triangles": 560,
+      "vertex_groups": [
+        "LowerLeg.L",
+        "LowerLeg.R",
+        "Foot.L",
+        "Foot.R"
+      ],
+      "weighted_vertices": 284,
+      "modifiers": [
+        "ARMATURE"
+      ],
+      "materials": [
+        "Swat_Black"
+      ]
+    },
+    {
+      "name": "Swat_Head",
+      "type": "MESH",
+      "dimensions": [
+        0.23739275336265564,
+        0.27547726035118103,
+        0.3711341619491577
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "vertices": 1211,
+      "triangles": 2308,
+      "vertex_groups": [
+        "Chest",
+        "Neck",
+        "Head"
+      ],
+      "weighted_vertices": 1211,
+      "modifiers": [
+        "ARMATURE"
+      ],
+      "materials": [
+        "Swat",
+        "Swat_Black",
+        "Visor"
+      ]
+    },
+    {
+      "name": "Swat_Legs",
+      "type": "MESH",
+      "dimensions": [
+        0.4485205113887787,
+        0.48822128772735596,
+        0.8231942653656006
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "vertices": 899,
+      "triangles": 1780,
+      "vertex_groups": [
+        "Body",
+        "Hips",
+        "Abdomen",
+        "UpperLeg.L",
+        "LowerLeg.L",
+        "UpperLeg.R",
+        "LowerLeg.R"
+      ],
+      "weighted_vertices": 899,
+      "modifiers": [
+        "ARMATURE"
+      ],
+      "materials": [
+        "Swat",
+        "Swat_Black"
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "name": "CharacterArmature|CharacterArmature|Death",
+      "frame_range": [
+        1.0,
+        33.0
+      ],
+      "channels": 629,
+      "keyframes": 5408
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Gun_Shoot",
+      "frame_range": [
+        1.0,
+        19.0
+      ],
+      "channels": 629,
+      "keyframes": 4218
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|HitRecieve",
+      "frame_range": [
+        1.0,
+        18.0
+      ],
+      "channels": 629,
+      "keyframes": 3018
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|HitRecieve_2",
+      "frame_range": [
+        1.0,
+        18.0
+      ],
+      "channels": 629,
+      "keyframes": 3008
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Idle",
+      "frame_range": [
+        1.0,
+        51.0
+      ],
+      "channels": 629,
+      "keyframes": 8648
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Idle_Gun",
+      "frame_range": [
+        1.0,
+        51.0
+      ],
+      "channels": 629,
+      "keyframes": 9308
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Idle_Gun_Pointing",
+      "frame_range": [
+        1.0,
+        51.0
+      ],
+      "channels": 629,
+      "keyframes": 9738
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Idle_Gun_Shoot",
+      "frame_range": [
+        1.0,
+        21.0
+      ],
+      "channels": 629,
+      "keyframes": 5218
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Idle_Neutral",
+      "frame_range": [
+        1.0,
+        51.0
+      ],
+      "channels": 629,
+      "keyframes": 4688
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Idle_Sword",
+      "frame_range": [
+        1.0,
+        51.0
+      ],
+      "channels": 629,
+      "keyframes": 8648
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Interact",
+      "frame_range": [
+        1.0,
+        39.0
+      ],
+      "channels": 629,
+      "keyframes": 4878
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Kick_Left",
+      "frame_range": [
+        1.0,
+        29.0
+      ],
+      "channels": 629,
+      "keyframes": 5848
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Kick_Right",
+      "frame_range": [
+        1.0,
+        29.0
+      ],
+      "channels": 629,
+      "keyframes": 5848
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Punch_Left",
+      "frame_range": [
+        1.0,
+        26.0
+      ],
+      "channels": 629,
+      "keyframes": 5028
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Punch_Right",
+      "frame_range": [
+        1.0,
+        26.0
+      ],
+      "channels": 629,
+      "keyframes": 5028
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Roll",
+      "frame_range": [
+        1.0,
+        41.0
+      ],
+      "channels": 629,
+      "keyframes": 10598
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Run",
+      "frame_range": [
+        1.0,
+        25.0
+      ],
+      "channels": 629,
+      "keyframes": 5398
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Run_Back",
+      "frame_range": [
+        1.0,
+        26.0
+      ],
+      "channels": 629,
+      "keyframes": 5578
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Run_Left",
+      "frame_range": [
+        1.0,
+        25.0
+      ],
+      "channels": 629,
+      "keyframes": 4938
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Run_Right",
+      "frame_range": [
+        1.0,
+        25.0
+      ],
+      "channels": 629,
+      "keyframes": 4938
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Run_Shoot",
+      "frame_range": [
+        1.0,
+        26.0
+      ],
+      "channels": 629,
+      "keyframes": 5458
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Sword_Slash",
+      "frame_range": [
+        1.0,
+        32.0
+      ],
+      "channels": 629,
+      "keyframes": 6058
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Walk",
+      "frame_range": [
+        1.0,
+        41.0
+      ],
+      "channels": 629,
+      "keyframes": 9228
+    },
+    {
+      "name": "CharacterArmature|CharacterArmature|Wave",
+      "frame_range": [
+        1.0,
+        51.0
+      ],
+      "channels": 629,
+      "keyframes": 8468
+    }
+  ],
+  "fps": 30,
+  "images": [],
+  "materials": [
+    {
+      "name": "Skin",
+      "diffuse": [
+        0.6172067523002625,
+        0.4178851246833801,
+        0.23839758336544037,
+        1.0
+      ]
+    },
+    {
+      "name": "Swat",
+      "diffuse": [
+        0.07818741351366043,
+        0.08650047332048416,
+        0.10224173218011856,
+        1.0
+      ]
+    },
+    {
+      "name": "Swat_Black",
+      "diffuse": [
+        0.03071345016360283,
+        0.02732088789343834,
+        0.024157628417015076,
+        1.0
+      ]
+    },
+    {
+      "name": "Visor",
+      "diffuse": [
+        0.008023192174732685,
+        0.008023192174732685,
+        0.008023192174732685,
+        1.0
+      ]
+    }
+  ]
+}

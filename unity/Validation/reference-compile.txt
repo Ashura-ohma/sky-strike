@@ -1,0 +1,9 @@
+Runtime: Microsoft (R) Visual C# Compiler version 4.3.1-3.22526.13 (41a5af9d)
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+
+Editor: Microsoft (R) Visual C# Compiler version 4.3.1-3.22526.13 (41a5af9d)
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+
+PASS: C# reference compilation only. Unity import, EditMode/PlayMode execution and APK build NOT performed.

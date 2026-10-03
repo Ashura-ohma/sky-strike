@@ -1,0 +1,14 @@
+{
+  "name": "SkyStrike.EditModeTests",
+  "references": [
+    "SkyStrike.Runtime",
+    "Unity.InputSystem",
+    "UnityEngine.UI"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

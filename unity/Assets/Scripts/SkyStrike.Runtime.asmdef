@@ -1,0 +1,1 @@
+{"name":"SkyStrike.Runtime","rootNamespace":"SkyStrike","references":["Unity.InputSystem","Unity.AI.Navigation","Unity.RenderPipelines.Universal.Runtime","UnityEngine.UI"],"autoReferenced":true}

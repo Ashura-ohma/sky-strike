@@ -1,0 +1,59 @@
+name: Unity Android vertical slice
+on:
+  push:
+    branches: [unity-moba]
+    paths: ['unity/**', '.github/workflows/unity-android.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: unity-android-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate-and-build:
+    if: github.ref == 'refs/heads/unity-moba'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Require user-configured Unity licensing
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        shell: bash
+        run: |
+          if [[ -z "$UNITY_LICENSE" || -z "$UNITY_EMAIL" || -z "$UNITY_PASSWORD" ]]; then
+            echo '::error::Unity license prerequisites are not configured. No Unity tests or APK build have run. Follow unity/Documentation/BUILD.md; never commit or log credentials.'
+            exit 1
+          fi
+      - name: Run native EditMode and PlayMode tests
+        uses: game-ci/unity-test-runner@32e57712352b500e17974b245a6dce9e11a73213 # v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: unity
+          unityVersion: 6000.0.58f2
+          testMode: all
+          artifactsPath: test-results
+      - name: Build genuine Unity IL2CPP Android APK
+        uses: game-ci/unity-builder@4423ee75828dff56037d1d1cfdac6b68e3a6ba00 # v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: unity
+          unityVersion: 6000.0.58f2
+          targetPlatform: Android
+          buildMethod: SkyStrike.Editor.BuildProject.Android
+          versioning: None
+      - name: Upload APK only after successful native build
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sky-strike-unity-android-${{ github.sha }}
+          path: unity/Builds/Android/sky-strike-unity.apk
+          if-no-files-found: error
+          retention-days: 14
