@@ -1,7 +1,8 @@
 export const EXTRA_HEROES={
  warden:{name:'曜石',title:'曙光守卫',role:'坦克 / 控制',color:0xffd08a,health:1180,mana:310,attack:49,power:0,armor:42,speed:7.2,range:3.7,rate:.95,skills:['裂地锤','不屈壁垒','盾锋冲阵','曙光震荡']},
  shade:{name:'夜刃',title:'暗影行者',role:'刺客 / 爆发',color:0xf498aa,health:730,mana:300,attack:63,power:0,armor:18,speed:9,range:3.4,rate:.6,skills:['影袭','飞刃','潜影','终幕处决']},
- tide:{name:'澜歌',title:'潮汐祭司',role:'辅助 / 治疗',color:0x87efd9,health:790,mana:460,attack:36,power:38,armor:18,speed:7.7,range:8.4,rate:.92,skills:['涌潮','治愈之雨','潮汐护佑','海之祈愿']}
+ tide:{name:'澜歌',title:'潮汐祭司',role:'辅助 / 治疗',color:0x87efd9,health:790,mana:460,attack:36,power:38,armor:18,speed:7.7,range:8.4,rate:.92,skills:['涌潮','治愈之雨','潮汐护佑','海之祈愿']},
+ draven:{name:'德莱文',title:'荣耀行刑官',role:'远程 / 飞斧射手',color:0xf2ae58,health:745,mana:330,attack:61,power:0,armor:17,speed:8,range:10,rate:.7,skills:['旋转飞斧','血性冲刺','开道利斧','冷血追命']}
 };
 export const EXTRA_ITEMS=[
  {id:'vampire',name:'饮血之锋',price:900,icon:'blade',category:'attack',desc:'攻击 +38 · 普攻吸血 15%',attack:38,lifesteal:.15},
@@ -23,7 +24,8 @@ export const HERO_DETAILS={
  ranger:{passive:'鹰眼：每第三次普攻伤害提高 50%。',skills:['向前发射三支穿云箭。','扇形散射，对前方敌人造成伤害。','朝指定方向翻滚。','发射七支穿透箭矢，覆盖大范围。']},
  warden:{passive:'坚守：生命低于 35% 时，受到伤害降低 15%。',skills:['重锤前方，减速并短暂眩晕。','获得护盾，4 秒内减伤 35%。','持盾冲锋，击晕落点附近敌人。','震击大地，伤害与自身最大生命相关，并眩晕敌人。']},
  shade:{passive:'背水：攻击生命低于 35% 的敌人时，伤害提高 25%。',skills:['冲向指定方向，斩击周围敌人。','投掷三把穿透飞刃。','潜行 3 秒并提高移速；攻击或施法会显形。','闪袭前方敌人，低血量目标承受额外伤害。']},
- tide:{passive:'余波：施法时恢复自身少量生命。',skills:['潮水拍向前方，造成伤害与减速。','治疗自身和附近友方英雄。','为附近友方英雄添加护盾。','潮汐大范围治疗友军，同时伤害并控制敌人。']}
+ tide:{passive:'余波：施法时恢复自身少量生命。',skills:['潮水拍向前方，造成伤害与减速。','治疗自身和附近友方英雄。','为附近友方英雄添加护盾。','潮汐大范围治疗友军，同时伤害并控制敌人。']},
+ draven:{passive:'崇拜：接斧和补刀积累层数。击杀英雄时兑现额外金币，阵亡损失一半层数。',skills:['准备一把强化普攻的飞斧，最多两把。命中后朝移动方向弹回，走进金色落点可接住；停攻 8 秒后消失。','短暂提高移速和攻速。接住飞斧立即刷新本技能冷却。','掷出双斧，对沿途敌人造成物理伤害，向两侧推开并减速 2 秒。','双斧远距离往返，去程命中英雄或再次点击技能便折返。每个目标每程命中一次，穿过目标后伤害逐渐降低。']}
 };
 export const RUNES={balanced:{name:'均衡',desc:'生命 +80 · 攻击 +5',health:80,attack:5},fury:{name:'强攻',desc:'攻击 +10 · 攻速 +10%',attack:10,haste:.1},arcane:{name:'秘法',desc:'法强 +20 · 回蓝 +2',power:20,manaRegen:2},guardian:{name:'守护',desc:'生命 +180 · 护甲 +8',health:180,armor:8}};
 export const DIFFICULTIES={easy:{name:'休闲',desc:'敌方属性较低，适合熟悉英雄',enemy:.78,reward:60},normal:{name:'标准',desc:'完整三路对局与野区争夺',enemy:1,reward:100},hard:{name:'挑战',desc:'敌方属性提高，技能更积极',enemy:1.2,reward:150},training:{name:'练习',desc:'初始满级与金币，练习技能和装备',enemy:.85,reward:0}};

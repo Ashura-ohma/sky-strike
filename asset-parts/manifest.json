@@ -40,5 +40,31 @@
       "asset-parts/skill-atlas-v5.08"
     ],
     "sha256": "b24a3d86be7c65f75b6be1afa6a2da30b1f751628194c75386a1741ec77fe7e7"
+  },
+  {
+    "output": "android/app/src/main/assets/art/draven-portrait-v6.png",
+    "parts": [
+      "asset-parts/draven-portrait-v6.00",
+      "asset-parts/draven-portrait-v6.01",
+      "asset-parts/draven-portrait-v6.02",
+      "asset-parts/draven-portrait-v6.03",
+      "asset-parts/draven-portrait-v6.04",
+      "asset-parts/draven-portrait-v6.05",
+      "asset-parts/draven-portrait-v6.06"
+    ],
+    "sha256": "4ca8abc496b31b2656bbb671faa81b81f8b6a09a7f9fb6cd0910b317defbb651"
+  },
+  {
+    "output": "android/app/src/main/assets/art/draven-skills-v6.png",
+    "parts": [
+      "asset-parts/draven-skills-v6.00",
+      "asset-parts/draven-skills-v6.01",
+      "asset-parts/draven-skills-v6.02",
+      "asset-parts/draven-skills-v6.03",
+      "asset-parts/draven-skills-v6.04",
+      "asset-parts/draven-skills-v6.05",
+      "asset-parts/draven-skills-v6.06"
+    ],
+    "sha256": "153c84361a6c99942b380216d75af4d9495cb381db6ee0c42edba0ba8a73365f"
   }
 ]

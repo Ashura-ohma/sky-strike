@@ -8,8 +8,8 @@ android {
         applicationId = "com.indie.moba.zhufeng.v4"
         minSdk = 26
         targetSdk = 34
-        versionCode = 5
-        versionName = "0.5.0"
+        versionCode = 6
+        versionName = "0.6.0"
     }
 
     signingConfigs.getByName("debug") {

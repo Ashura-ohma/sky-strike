@@ -24,3 +24,26 @@
 .skill-art{position:absolute;inset:4px;display:block;pointer-events:none;border-radius:inherit;background-image:url('art/skill-atlas-v5.png');background-size:400% 600%;background-repeat:no-repeat;opacity:0;filter:saturate(.8) brightness(.9)}.painted-skills .skill-art{opacity:1}.skill-button.aiming .skill-art{filter:saturate(1) brightness(1.1)}.hero-skills>div,.book-skills>div>span{position:relative}.hero-skills .skill-art,.book-skills .skill-art{inset:0;border-radius:0}.skill-button .cd{z-index:2}.skill-button .skill-rank{z-index:3;text-shadow:0 1px 3px #000}.skill-button>small{z-index:3}.book-skills>div>span{width:42px;height:42px}.hero-skills>div{padding:4px}
 
 .portrait.portrait-close{background-size:600% 400%}
+
+/* V6: readable targeting and a seven-hero roster without covering the model. */
+body[data-hero="draven"]{--hero:#d6a367}
+.hero-picker{grid-template-columns:repeat(4,1fr)}
+.hero-card .new-hero{position:absolute;top:2px;right:3px;font-size:7px;font-style:normal;color:#e5c58c;line-height:1.3}
+.portrait.draven-portrait,.portrait.draven-portrait.portrait-close{background-image:url('art/draven-portrait-v6.png');background-size:180%;background-position:54% 0%;background-color:#412a20}
+.hero-card>.portrait{image-rendering:auto;filter:saturate(.88) brightness(.94);opacity:.95}
+.hero-badge>.portrait{filter:none}
+.skill-art.draven-skill-art{background-image:url('art/draven-skills-v6.png');background-size:200% 200%;opacity:0;filter:none}
+.painted-skills .draven-skill-art{opacity:0}.painted-draven .draven-skill-art{opacity:1}
+.target-panel{position:absolute;left:50%;top:62px;transform:translateX(-50%);width:156px;padding:5px 8px 7px;background:linear-gradient(110deg,#221d1cc9,#071d29c9);border:1px solid #b5976359;border-radius:3px;color:#ecd7ba}
+.target-panel>div{height:20px;display:flex;align-items:center;gap:7px}.target-panel small{font-size:8px;color:#aaa99a}.target-panel strong{flex:1;font-size:10px;font-weight:500;letter-spacing:1px}.target-panel button{position:absolute;right:-26px;top:-1px;width:26px;height:35px;background:#0a1c28ce;border:1px solid #b5976359;color:#d8c2a0;font-size:17px}
+.target-meter{display:block;height:3px;background:#453231;overflow:hidden}.target-meter i{display:block;width:100%;height:100%;background:linear-gradient(90deg,#bf6356,#e69b73)}
+.aim-mode{position:absolute;right:3px;bottom:257px;padding:4px 9px;white-space:nowrap;border:1px solid #d1bd7e5c;background:#091e2ec7;border-radius:12px;font-size:9px;color:#e6d29f}
+.draven-hud{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:5px 10px;border:1px solid #b7965b57;background:#091d29c2;border-radius:3px;font-size:9px;color:#afbec0;white-space:nowrap}
+.draven-hud b{font-weight:500;color:#e9ca8e;margin-left:3px}.axe-tokens{display:flex;gap:3px;align-items:center}.axe-tokens i{font-size:15px;font-style:normal;color:#635c51;text-shadow:0 1px 2px #000}.axe-tokens i.charged{color:#edb85c;text-shadow:0 0 8px #e5a5428c}.draven-hud.rushing{border-color:#ddb569}
+.skill-button.rush-ready{box-shadow:0 0 0 1px #d6af657a,0 0 17px #ddb25a35}.skill-button.recast .cd{display:none!important}.skill-button.recast{border-color:#ffd991;box-shadow:0 0 14px #eeb24b78}
+#waypointHint{top:108px}#announcement{top:111px}
+@media(max-height:480px){.hero-picker{gap:5px}.hero-card{width:83px;padding-left:38px}.hero-card>.portrait{width:34px}.hero-card strong{font-size:10px;letter-spacing:0}.hero-card small{font-size:7px}.hero-copy p{margin-bottom:8px}.target-panel{top:54px;width:144px;padding:3px 7px 5px}.target-panel>div{height:18px}.target-panel button{height:28px}.aim-mode{bottom:226px;font-size:8px;padding:4px 8px}.draven-hud{left:49%;bottom:88px;font-size:8px;gap:7px;padding:4px 7px}.axe-tokens i{font-size:13px}#waypointHint{top:91px}#announcement{top:100px}#tutorial{top:95px}}
+@media(max-height:370px){.hero-picker{bottom:31px}.hero-card{height:46px;width:83px}.hero-copy h1{font-size:37px}.hero-copy p{max-width:226px;font-size:8px}.hero-copy{top:74px}.target-panel{top:53px}.draven-hud{bottom:80px}}
+@media(max-width:760px) and (orientation:landscape){.hero-card{width:76px;padding-left:34px}.hero-card>.portrait{width:30px}.hero-card strong{font-size:9px}.hero-card small{font-size:6px}.hero-picker{gap:4px}.draven-hud{left:46%;bottom:78px;gap:5px}.target-panel{left:48%;width:126px}.target-panel strong{font-size:9px}.aim-mode{bottom:226px}}
+
+.portrait.draven-portrait.portrait-close{background-size:250%;background-position:54% 7%}

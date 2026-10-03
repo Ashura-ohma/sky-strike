@@ -2,6 +2,8 @@ import {setupTactics,tickTactics,updateContracts,tacticalMethods} from './tactic
 export {BRUSHES,SPELLS} from './tactics.mjs';
 import {EXTRA_HEROES,EXTRA_ITEMS,RUNES,DIFFICULTIES} from './content.mjs';
 import {analogDisplacement,resetMotion,moveWithCollision,waypointFor,separateUnits} from './movement.mjs';
+import {resolveSkillAim} from './targeting.mjs';
+import {DRAVEN_COSTS,DRAVEN_COOLDOWNS,setupDraven,dravenRecast,dravenHaste,dravenSpeed,castDraven,prepareDravenAttack,landDravenAxe,tickDraven,tickDravenShot,dravenKill,resetDraven,dravenCatchGoal} from './draven.mjs';
 export const HEROES = {
   blade: { name: '苍岚', title: '逐风剑士', role: '近战 / 突进', color: 0x85e2ef, health: 860, mana: 280, attack: 57, power: 0, armor: 24, speed: 8.4, range: 3.5, rate: .72, skills: ['破风斩','回旋刃','风之护','天穹坠'] },
   mage: { name: '星璃', title: '星辉法师', role: '远程 / 法术', color: 0xc4a3ff, health: 650, mana: 420, attack: 42, power: 40, armor: 12, speed: 7.6, range: 8.8, rate: .9, skills: ['星辉弹','霜星阵','折光跃','陨星天降'] },
@@ -50,7 +52,7 @@ export class Arena {
       kinds.forEach((kind,i)=>{
         const h=this.spawn({type:'hero',team,kind,name:names[i],lane:[1,0,2,0,2][i],...BASES[team],...HEROES[kind],health:HEROES[kind].health,radius:1.2});
         h.name=names[i];h.x+=(i-2)*2;h.z+=(i-2)*2;h.level=1;h.xp=0;h.gold=450;h.inventory=[];h.kills=0;h.deaths=0;h.assists=0;h.skillCd=[0,0,0,0];h.maxMana=h.mana;h.respawn=0;h.pathIndex=team===0?1:LANES[h.lane].length-2;h.isPlayer=team===0&&i===0;h.face={x:team===0?1:-1,z:team===0?-1:1};h.haste=0;h.manaRegen=0;h.skillLevels=[1,1,1,0];h.skillPoints=0;h.damageDealt=0;h.damageTaken=0;h.healing=0;h.lastHits=0;h.towerKills=0;h.streak=0;h.attackCount=0;h.stunUntil=0;h.crit=0;h.lifesteal=0;h.cdr=0;h.magicResist=0;h.penetration=0;h.regen=0;h.frost=0;h.thorns=0;
-        if(h.isPlayer){this.player=h;const rune=RUNES[this.options.rune];if(rune)this.applyStats(h,rune,1);}if(team===1){h.attack*=this.difficulty.enemy;h.power*=this.difficulty.enemy;h.maxHealth*=this.difficulty.enemy;h.health=h.maxHealth;}
+        setupDraven(h);if(h.isPlayer){this.player=h;const rune=RUNES[this.options.rune];if(rune)this.applyStats(h,rune,1);}if(team===1){h.attack*=this.difficulty.enemy;h.power*=this.difficulty.enemy;h.maxHealth*=this.difficulty.enemy;h.health=h.maxHealth;}
       });
     }
     for(const [x,z,camp] of [[-25,-22,'blue'],[25,22,'red'],[-33,24,'red'],[33,-24,'blue']])this.spawn({type:'monster',camp,team:2,x,z,home:{x,z},health:780,attack:48,armor:15,range:3.5,rate:1.2,radius:2.3,respawn:0,speed:4,stunUntil:0});
@@ -75,7 +77,7 @@ export class Arena {
       return rank(a)-rank(b)||dist(u,a)-dist(u,b);
     });return targets[0];
   }
-  moveSpeed(u,speed=u.speed){return speed*(this.time<u.slowUntil?.45:1)*(this.time<(u.stealthUntil||0)?1.25:1);}
+  moveSpeed(u,speed=u.speed){return speed*dravenSpeed(this,u)*(this.time<u.slowUntil?.45:1)*(this.time<(u.stealthUntil||0)?1.25:1);}
   displace(u,dx,dz){
     if(Math.hypot(dx,dz)<1e-8)return;u._moveIntent=true;const before={x:u.x,z:u.z};
     if(moveWithCollision(u,dx,dz,this.blockers)>1e-6){u.moving=true;u.face=direction(before,u);}
@@ -91,22 +93,22 @@ export class Arena {
     const target=this.nearestEnemy(u,range);u.attackTargetId=target?.id||null;return target;
   }
   vulnerable(base){return [0,1,2].some(l=>!this.units.some(v=>v.type==='tower'&&v.team===base.team&&v.lane===l&&v.alive));}
-  damage(source,target,amount,spell=false,trueDamage=false){
+  damage(source,target,amount,spell=false,trueDamage=false,physicalSpell=false){
     if(!target?.alive||!source||source.team===target.team||this.winner!==null)return 0;
     if(target.type==='base'&&!this.vulnerable(target)){if(source.isPlayer&&this.time-(this.lastProtected??-99)>2){this.lastProtected=this.time;this.event('toast',{text:'先摧毁一路的两座防御塔，才能攻击水晶'});}return 0;}
     if(target.type==='tower'&&!this.units.some(v=>v.alive&&v.team===source.team&&v.type==='minion'&&dist(v,target)<13))amount*=.42;
-    if(!trueDamage&&source.kind==='shade'&&target.health<target.maxHealth*.35)amount*=1.25;if(!trueDamage&&target.kind==='warden'&&target.health<target.maxHealth*.35)amount*=.85;if(!trueDamage&&this.time<(target.guardUntil||0))amount*=.65;if(!trueDamage&&spell&&source.kind==='mage')amount+=source.power*.08;let value=trueDamage?amount:amount*100/(100+(spell?target.armor*.5*(1-Math.min(.65,source.penetration||0)):target.armor));if(!trueDamage&&spell)value*=1-Math.min(.6,target.magicResist||0);if(!trueDamage&&source.team<2&&this.dragonBuff[source.team]>this.time)value*=1.15;
+    if(!trueDamage&&source.kind==='shade'&&target.health<target.maxHealth*.35)amount*=1.25;if(!trueDamage&&target.kind==='warden'&&target.health<target.maxHealth*.35)amount*=.85;if(!trueDamage&&this.time<(target.guardUntil||0))amount*=.65;if(!trueDamage&&spell&&source.kind==='mage')amount+=source.power*.08;let value=trueDamage?amount:amount*100/(100+(spell&&!physicalSpell?target.armor*.5*(1-Math.min(.65,source.penetration||0)):target.armor));if(!trueDamage&&spell&&!physicalSpell)value*=1-Math.min(.6,target.magicResist||0);if(!trueDamage&&source.team<2&&this.dragonBuff[source.team]>this.time)value*=1.15;
     const absorbed=Math.min(value,target.shield);target.shield-=absorbed;value-=absorbed;
     target.health=Math.max(0,target.health-value);target.hitAt=this.time;target.recall=0;source.revealedUntil=this.time+2;target.revealedUntil=this.time+2;this.event('hit',{id:target.id,source:source.id,amount:Math.round(value),spell});
     if(source.type==='hero'){source.damageDealt+=value;if(!spell&&source.lifesteal>0){const heal=Math.min(source.maxHealth-source.health,value*source.lifesteal);source.health+=heal;source.healing+=heal;}if(spell&&source.frost)target.slowUntil=Math.max(target.slowUntil,this.time+1);}if(target.type==='hero'){target.damageTaken+=value;if(source.type==='hero'){target.lastAttacker=source.id;if(!spell&&target.thorns>0){const reflected=Math.min(Math.max(0,source.health-1),value*target.thorns);source.health-=reflected;}}}
     if(target.health<=0){
-      target.alive=false;target.deadAt=this.time;this.event('death',{id:target.id,source:source.id});
+      target.alive=false;target.deadAt=this.time;resetDraven(this,target,true);this.event('death',{id:target.id,source:source.id});
       let credit=source.type==='hero'?source:this.units.filter(h=>h.type==='hero'&&h.alive&&h.team===source.team&&dist(h,target)<20).sort((a,b)=>dist(a,target)-dist(b,target))[0];
       if(target.type==='hero'){
         target.deaths++;target.streak=0;target.respawn=9+target.level*.8;if(source.team<2)this.teamKills[source.team]++;if(credit){credit.kills++;credit.streak++;credit.gold+=200;this.addXp(credit,130);}
-        this.event('kill',{killer:credit?.name||'小兵 / 防御塔',victim:target.name,team:source.team});
+        dravenKill(this,credit,target);this.event('kill',{killer:credit?.name||'小兵 / 防御塔',victim:target.name,team:source.team});
         for(const h of this.units)if(h.type==='hero'&&h.alive&&h.team===source.team&&h!==credit&&dist(h,target)<18)h.assists++;
-      } else if(target.type==='minion'){if(credit){credit.lastHits++;credit.gold+=target.siege?65:30;this.addXp(credit,target.siege?65:40);}}
+      } else if(target.type==='minion'){if(credit){credit.lastHits++;if(credit===source)dravenKill(this,credit,target);credit.gold+=target.siege?65:30;this.addXp(credit,target.siege?65:40);}}
       else if(target.type==='tower'){if(credit)credit.towerKills++;
         for(const h of this.units)if(h.type==='hero'&&h.team===source.team){h.gold+=140;this.addXp(h,60);}
         this.event('tower',{team:source.team,text:source.team===0?'敌方防御塔已摧毁':'我方防御塔被摧毁'});
@@ -121,20 +123,22 @@ export class Arena {
   }
   attack(u,target){
     if(!target||u.cd>0||!target.alive||target.team===u.team||dist(u,target)>u.range+target.radius+.001||this.time<(u.stunUntil||0)||!this.canSee(u.team,target))return false;u.stealthUntil=0;u.revealedUntil=this.time+2;u.attackCount=(u.attackCount||0)+1;
-    if(!u.moving)u.face=direction(u,target);u.attackFace=direction(u,target);u.cd=(u.rate||.9)/(1+(u.haste||0));this.event('attack',{id:u.id,target:target.id});
+    if(!u.moving)u.face=direction(u,target);u.attackFace=direction(u,target);u.cd=(u.rate||.9)/(1+(u.haste||0)+dravenHaste(this,u));this.event('attack',{id:u.id,target:target.id});
     let damage=u.attack*(this.time<(u.buffUntil||0)?1.18:1);if(u.empowered){damage*=1.35;u.empowered=false;}if(u.kind==='ranger'&&u.attackCount%3===0)damage*=1.5;if(this.rand()<(u.crit||0))damage*=1.75;
-    if(u.range>4)this.shots.push({id:++this.nextId,source:u.id,team:u.team,target:target.id,x:u.x,z:u.z,dir:direction(u,target),speed:u.type==='tower'?25:30,damage,life:2,spell:false,radius:.65,kind:u.type==='tower'?'tower':'attack'});
+    const projectile=prepareDravenAttack(this,u,damage);damage=projectile.damage;
+    if(u.range>4)this.shots.push({id:++this.nextId,source:u.id,team:u.team,target:target.id,x:u.x,z:u.z,dir:direction(u,target),speed:u.type==='tower'?25:30,damage,life:2,spell:false,radius:.65,kind:u.type==='tower'?'tower':projectile.kind});
     else this.damage(u,target,damage);return true;
   }
-  cast(h,index,aim={x:1,z:-1}){
-    if(!h?.alive||this.winner!==null||!Number.isInteger(index)||index<0||index>3||h.skillCd[index]>0||this.time<(h.stunUntil||0))return false;
+  cast(h,index,aim=null,options={}){
+    if(!h?.alive||this.winner!==null||!Number.isInteger(index)||index<0||index>3||this.time<(h.stunUntil||0))return false;
+    if(dravenRecast(this,h,index))return true;if(h.skillCd[index]>0)return false;
     if(index===3&&h.level<4){if(h.isPlayer)this.event('toast',{text:'终极技能在 4 级解锁'});return false;}
-    const costs=[30,45,35,90],cooldowns=[5,8,11,26];if(h.mana<costs[index]){if(h.isPlayer)this.event('toast',{text:'法力不足，回城可恢复'});return false;}
-    const mag=Math.hypot(aim.x,aim.z)||1,dir={x:aim.x/mag,z:aim.z/mag};h.face=dir;h.mana-=costs[index];const rank=Math.max(1,h.skillLevels[index]);const amp=1+(rank-1)*.16;h.skillCd[index]=cooldowns[index]*(1-Math.min(.4,h.cdr||0))*Math.pow(.96,rank-1);h.recall=0;h.stealthUntil=0;h.revealedUntil=this.time+2;if(h.kind==='blade')h.empowered=true;if(h.kind==='tide'){const heal=Math.min(h.maxHealth-h.health,25+h.power*.2);h.health+=heal;h.healing+=heal;}
-    const at=range=>({x:clamp(h.x+dir.x*range,-58,58),z:clamp(h.z+dir.z*range,-58,58)});
+    const costs=h.kind==='draven'?DRAVEN_COSTS:[30,45,35,90],cooldowns=h.kind==='draven'?DRAVEN_COOLDOWNS:[5,8,11,26];if(h.mana<costs[index]){if(h.isPlayer)this.event('toast',{text:'法力不足，回城可恢复'});return false;}
+    const resolved=resolveSkillAim(this,h,index,{...options,manual:options.manual??!!aim,aim}),dir=resolved.aim;if(resolved.mode!=='self')h.face=dir;h.lastSkillTargetId=resolved.targetId;h.mana-=costs[index];const rank=Math.max(1,h.skillLevels[index]);const amp=1+(rank-1)*.16;h.skillCd[index]=cooldowns[index]*(1-Math.min(.4,h.cdr||0))*Math.pow(.96,rank-1);h.recall=0;h.stealthUntil=0;h.revealedUntil=this.time+2;if(h.kind==='blade')h.empowered=true;if(h.kind==='tide'){const heal=Math.min(h.maxHealth-h.health,25+h.power*.2);h.health+=heal;h.healing+=heal;}
+    const at=range=>{const length=['point','dash','target'].includes(resolved.metadata.targeting)?Math.min(range,resolved.distance):range;return {x:clamp(h.x+dir.x*length,-58,58),z:clamp(h.z+dir.z*length,-58,58)};};
     const aoe=(center,radius,damage,slow=0)=>{this.effects.push({id:++this.nextId,kind:'ring',team:h.team,x:center.x,z:center.z,radius,life:.6,maxLife:.6});for(const t of this.units)if(t.alive&&t.team!==h.team&&dist(center,t)<radius+t.radius){this.damage(h,t,damage*amp,true);if(slow)t.slowUntil=this.time+slow;}};
     const bolt=(d,damage,range,kind='skill')=>this.shots.push({id:++this.nextId,source:h.id,team:h.team,x:h.x,z:h.z,dir:d,speed:26,damage:damage*amp,life:range/26,spell:true,radius:1.1,kind,hitIds:[],pierce:2});
-    const power=h.power||0;this.event('cast',{id:h.id,index});if(EXTRA_HEROES[h.kind]){this.specialCast(h,index,dir,power,aoe,bolt,at,amp);return true;}
+    const power=h.power||0;this.event('cast',{id:h.id,index,target:resolved.targetId});if(h.kind==='draven'){castDraven(this,h,index,dir,amp);return true;}if(EXTRA_HEROES[h.kind]){this.specialCast(h,index,dir,power,aoe,bolt,at,amp,resolved);return true;}
     if(index===0){
       if(h.kind==='blade'){const end=at(7);this.walk(h,end,1,7);aoe(h,4.6,72+h.attack*.5);}
       else if(h.kind==='mage')bolt(dir,85+power,21,'star');
@@ -152,7 +156,7 @@ export class Arena {
       else for(let i=-3;i<=3;i++){const a=i*.1,ca=Math.cos(a),sa=Math.sin(a);bolt({x:dir.x*ca-dir.z*sa,z:dir.x*sa+dir.z*ca},65+h.attack*.65,26,'arrow');}
     }return true;
   }
-  specialCast(h,index,dir,power,aoe,bolt,at,amp){
+  specialCast(h,index,dir,power,aoe,bolt,at,amp,resolved){
     const stun=(center,radius,seconds)=>{for(const t of this.units)if(t.alive&&t.team!==h.team&&!['base','tower'].includes(t.type)&&dist(t,center)<radius+t.radius)t.stunUntil=this.time+seconds;};
     const allies=()=>this.units.filter(u=>u.alive&&u.team===h.team&&u.type==='hero'&&dist(u,h)<11);
     const heal=(u,value)=>{const actual=Math.min(u.maxHealth-u.health,value);u.health+=actual;h.healing+=actual;};
@@ -165,7 +169,7 @@ export class Arena {
       if(index===0){this.walk(h,at(8),1,8);aoe(h,4,55+h.attack*.8);}
       if(index===1)for(const angle of [-.16,0,.16])bolt({x:dir.x*Math.cos(angle)-dir.z*Math.sin(angle),z:dir.x*Math.sin(angle)+dir.z*Math.cos(angle)},55+h.attack*.55,18,'arrow');
       if(index===2){h.stealthUntil=this.time+3;h.revealedUntil=0;this.effects.push({id:++this.nextId,kind:'ring',team:h.team,x:h.x,z:h.z,radius:3,life:.5,maxLife:.5});}
-      if(index===3){const t=this.units.filter(u=>u.alive&&u.type==='hero'&&u.team!==h.team&&this.canSee(h.team,u)&&dist(h,u)<15).sort((a,b)=>dist(a,at(10))-dist(b,at(10)))[0];const end=t?{x:t.x-dir.x*2,z:t.z-dir.z*2}:at(10);this.walk(h,end,1,15);aoe(h,4.5,170+h.attack*1.3);}
+      if(index===3){const t=resolved.targetId?this.byId(resolved.targetId):this.units.filter(u=>u.alive&&u.type==='hero'&&u.team!==h.team&&this.canSee(h.team,u)&&dist(h,u)<15&&direction(h,u).x*dir.x+direction(h,u).z*dir.z>.6).sort((a,b)=>dist(a,at(15))-dist(b,at(15)))[0];const end=t?{x:t.x-dir.x*2,z:t.z-dir.z*2}:at(10);this.walk(h,end,1,15);aoe(h,4.5,170+h.attack*1.3);}
     }else if(h.kind==='tide'){
       if(index===0)aoe(at(7),5,75+power*.7,2);
       if(index===1){for(const u of allies())heal(u,(110+power*.7)*amp);this.effects.push({id:++this.nextId,kind:'heal',team:h.team,x:h.x,z:h.z,radius:9,life:.8,maxLife:.8});}
@@ -188,13 +192,13 @@ export class Arena {
     for(const u of this.units){
       u._frameX=u.x;u._frameZ=u.z;u._moveIntent=false;u.cd=Math.max(0,u.cd-dt);u.moving=false;if(u.shieldUntil<this.time)u.shield=0;
       if(!u.alive){
-        if(u.type==='hero'||u.type==='monster'){u.respawn-=dt;if(u.respawn<=0){u.alive=true;u.health=u.maxHealth;u.mana=u.maxMana||0;const home=u.type==='hero'?BASES[u.team]:u.home;u.x=home.x;u.z=home.z;u.pathIndex=u.team===0?1:LANES[u.lane||0].length-2;u.skillCd?.fill(0);u.stunUntil=0;u.stealthUntil=0;u.revealedUntil=0;u.leashing=false;u.retreat=false;u.moveGoal=null;u.attackTargetId=null;resetMotion(u);if(u.boss)this.event('objective',{text:'远古龙王已苏醒 · 击败可强化全队与兵线'});if(u.isPlayer)this.event('toast',{text:'英雄复活，重新加入战场'});}}
+        if(u.type==='hero'||u.type==='monster'){u.respawn-=dt;if(u.respawn<=0){u.alive=true;u.health=u.maxHealth;u.mana=u.maxMana||0;const home=u.type==='hero'?BASES[u.team]:u.home;u.x=home.x;u.z=home.z;u.pathIndex=u.team===0?1:LANES[u.lane||0].length-2;u.skillCd?.fill(0);resetDraven(this,u);u.stunUntil=0;u.stealthUntil=0;u.revealedUntil=0;u.leashing=false;u.retreat=false;u.moveGoal=null;u.attackTargetId=null;resetMotion(u);if(u.boss)this.event('objective',{text:'远古龙王已苏醒 · 击败可强化全队与兵线'});if(u.isPlayer)this.event('toast',{text:'英雄复活，重新加入战场'});}}
         continue;
       }
       if(u.type==='hero'){
         u.gold+=3*dt;this.addXp(u,4*dt);u.mana=Math.min(u.maxMana,u.mana+(2+(u.manaRegen||0)+(u.blueUntil>this.time?10:0))*dt);u.health=Math.min(u.maxHealth,u.health+(1.2+(u.regen||0)+(this.relic.active&&this.relic.owner===u.team?3:0))*dt);u.skillCd=u.skillCd.map(cd=>Math.max(0,cd-dt));
         if(dist(u,BASES[u.team])<9){u.health=Math.min(u.maxHealth,u.health+85*dt);u.mana=Math.min(u.maxMana,u.mana+65*dt);}
-        if(this.time<u.stunUntil){resetMotion(u);continue;}if(u.isPlayer){
+        tickDraven(this,u);if(this.time<u.stunUntil){resetMotion(u);continue;}if(u.isPlayer){
           const moving=Math.hypot(input.x||0,input.z||0)>.0001;
           if(!input.attack)u.attackTargetId=null;
           const target=input.attack&&u.recall<=0?this.attackTarget(u):null;
@@ -212,12 +216,12 @@ export class Arena {
           }
           if(target&&u.recall<=0)this.attack(u,target);
         }else{
-          const magical=['mage','tide'].includes(u.kind),build=['boots',magical?'orb':'blade','armor',magical?'void':'infinity','heart',magical?'mercy':'vampire'];u.buildStep||=0;const item=ITEMS.find(i=>i.id===build[u.buildStep]);if(item&&this.buy(item.id,u).ok)u.buildStep++;if(u.skillPoints>0)this.upgradeSkill(u.level>=4&&u.skillLevels[3]<3?3:u.skillLevels.indexOf(Math.min(...u.skillLevels.slice(0,3))),u);const enemy=this.nearestEnemy(u,13),home=BASES[u.team];
+          const magical=['mage','tide'].includes(u.kind),build=['boots',magical?'orb':'blade','armor',magical?'void':'infinity','heart',magical?'mercy':'vampire'];u.buildStep||=0;const item=ITEMS.find(i=>i.id===build[u.buildStep]);if(item&&this.buy(item.id,u).ok)u.buildStep++;if(u.skillPoints>0)this.upgradeSkill(u.level>=4&&u.skillLevels[3]<3?3:u.skillLevels.indexOf(Math.min(...u.skillLevels.slice(0,3))),u);const enemy=this.nearestEnemy(u,13),home=BASES[u.team],catchGoal=dravenCatchGoal(this,u);
           if(u.health<u.maxHealth*.23||u.retreat){u.retreat=u.health<u.maxHealth*.8;this.navigate(u,home,dt);}
-          else if(enemy){if(dist(u,enemy)>u.range+enemy.radius)this.navigate(u,enemy,dt);else this.attack(u,enemy);if(enemy.type!=='tower'&&enemy.type!=='base'&&dist(u,enemy)<12){const aim=direction(u,enemy);if(u.skillCd[0]<=0)this.cast(u,0,aim);else if(u.skillCd[1]<=0&&dist(u,enemy)<8)this.cast(u,1,aim);else if(u.skillCd[3]<=0&&u.level>=4&&enemy.type==='hero')this.cast(u,3,aim);else if(u.health<u.maxHealth*.55&&u.skillCd[2]<=0)this.cast(u,2,aim);}}
+          else if(enemy){if(catchGoal)this.navigate(u,catchGoal,dt);else if(dist(u,enemy)>u.range+enemy.radius)this.navigate(u,enemy,dt);else this.attack(u,enemy);if(enemy.type!=='tower'&&enemy.type!=='base'&&dist(u,enemy)<12){const aim=direction(u,enemy);if(u.skillCd[0]<=0)this.cast(u,0,aim);else if(u.skillCd[1]<=0&&dist(u,enemy)<8)this.cast(u,1,aim);else if(u.skillCd[3]<=0&&u.level>=4&&enemy.type==='hero')this.cast(u,3,aim);else if(u.health<u.maxHealth*.55&&u.skillCd[2]<=0)this.cast(u,2,aim);}}
           else if(u.team===0&&this.command){const target=this.command.kind==='defend'?BASES[0]:this.command.kind==='dragon'?this.dragon:this.command.kind==='relic'?this.relic:{x:0,z:0};if(dist(u,target)>4)this.navigate(u,target,dt);else if(target.boss&&target.alive)this.attack(u,target);}
           else if(this.relic.active&&this.relic.owner===-1&&u.kind==='warden'){if(dist(u,this.relic)>2)this.navigate(u,this.relic,dt);}
-          else this.laneAdvance(u,dt);
+          else if(catchGoal)this.navigate(u,catchGoal,dt);else this.laneAdvance(u,dt);
         }
       }else if(u.type==='minion'){
         const candidates=this.units.filter(t=>t.alive&&t.team!==u.team&&t.team!==2&&dist(u,t)<u.range+3+t.radius&&this.canSee(u.team,t)).sort((a,b)=>(a.type==='minion'?0:a.type==='hero'?1:2)-(b.type==='minion'?0:b.type==='hero'?1:2)||dist(u,a)-dist(u,b));
@@ -234,8 +238,9 @@ export class Arena {
     separateUnits(mobiles,dt,this.blockers);
     for(const u of this.units)u.moving=u.alive&&Math.hypot(u.x-u._frameX,u.z-u._frameZ)>1e-5;
     for(const s of this.shots){
+      if(s.life<=0)continue;if(tickDravenShot(this,s,dt))continue;
       s.life-=dt;if(s.life<=0)continue;const source=this.byId(s.source);if(!source){s.life=0;continue;}
-      if(s.target){const target=this.byId(s.target);if(!target?.alive){s.life=0;continue;}s.dir=direction(s,target);const delta=s.speed*dt;if(dist(s,target)<delta+target.radius){this.damage(source,target,s.damage,s.spell);s.life=0;continue;}}
+      if(s.target){const target=this.byId(s.target);if(!target?.alive){landDravenAxe(this,s);s.life=0;continue;}s.dir=direction(s,target);const delta=s.speed*dt;if(dist(s,target)<delta+target.radius){this.damage(source,target,s.damage,s.spell);landDravenAxe(this,s);s.life=0;continue;}}
       s.x+=s.dir.x*s.speed*dt;s.z+=s.dir.z*s.speed*dt;
       if(!s.target){for(const t of this.units)if(t.alive&&t.team!==s.team&&!s.hitIds.includes(t.id)&&dist(s,t)<s.radius+t.radius){this.damage(source,t,s.damage,s.spell);s.hitIds.push(t.id);if(s.hitIds.length>=s.pierce){s.life=0;break;}}}
     }
