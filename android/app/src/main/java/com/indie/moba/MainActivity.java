@@ -24,6 +24,7 @@ public final class MainActivity extends Activity {
                 .build();
 
         webView = new WebView(this);
+        webView.setKeepScreenOn(true);
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
@@ -86,7 +87,7 @@ public final class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
         if (webView != null) webView.evaluateJavascript("window.dispatchEvent(new Event('moba-pause'))", null);
-        new AlertDialog.Builder(this).setTitle("退出逐风战线？")
+        new AlertDialog.Builder(this).setTitle("退出逐风英雄战境？")
             .setMessage("当前对局不会保存。")
             .setPositiveButton("退出", (dialog, which) -> finish())
             .setNegativeButton("继续游戏", (dialog, which) -> resumeGame())

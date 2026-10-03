@@ -1,43 +1,44 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-  <meta name="theme-color" content="#0b1825">
-  <title>逐风战线</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <main id="game-shell" aria-label="逐风战线离线游戏">
-    <canvas id="arena" aria-label="战场"></canvas>
-    <section id="start-screen" class="screen">
-      <div class="title-mark">逐风战线</div>
-      <p>单人离线 MOBA · 原创英雄试炼</p>
-      <div class="hero-card"><span class="hero-glyph">✦</span><div><b>星序法师</b><small>远程法术 · Q 技能 · R 奥义</small></div></div>
-      <button id="start-button" class="primary">开始对局</button>
-      <small class="hint">推动摇杆移动，按住普攻；击破防御塔后摧毁敌方水晶。</small>
-    </section>
-    <section id="end-screen" class="screen hidden">
-      <div id="result-title" class="title-mark"></div>
-      <p id="result-detail"></p>
-      <button id="restart-button" class="primary">再战一局</button>
-    </section>
-    <header class="hud">
-      <div class="health-box"><span>我方英雄</span><div class="meter"><i id="player-health"></i></div></div>
-      <div class="score-box"><span id="clock">00:00</span><b id="kills">击败 0</b></div>
-      <div class="health-box enemy-health"><span id="objective-label">敌方防御塔</span><div class="meter"><i id="objective-health"></i></div></div>
-    </header>
-    <div class="controls">
-      <div id="joystick" class="joystick" aria-label="移动摇杆"><i id="stick"></i></div>
-      <div class="action-buttons">
-        <button id="ult" class="skill" aria-label="奥义">R<small>14秒</small></button>
-        <button id="skill" class="skill" aria-label="星火">Q<small>5秒</small></button>
-        <button id="attack" class="attack" aria-label="普通攻击">普攻</button>
-      </div>
-    </div>
-    <div id="toast" class="toast"></div>
-  </main>
-  <script src="core.js"></script>
-  <script src="game.js"></script>
-</body>
-</html>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#102330"><title>逐风 · 英雄战境</title><link rel="stylesheet" href="style.css"></head><body>
+<svg aria-hidden="true" class="svg-defs" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="i-blade" viewBox="0 0 48 48"><path d="M12 35 36 7l5-1-1 6-27 25M8 30l11 10M12 36l-6 7"/></symbol>
+<symbol id="i-orb" viewBox="0 0 48 48"><path d="m24 5 4 13 14 6-14 5-4 14-5-14-14-5 14-6Z"/><circle cx="24" cy="24" r="6"/></symbol>
+<symbol id="i-shield" viewBox="0 0 48 48"><path d="m24 5 16 6v14c0 9-16 18-16 18S8 34 8 25V11Z"/><path d="m15 24 6 6 13-14"/></symbol>
+<symbol id="i-bow" viewBox="0 0 48 48"><path d="M10 7q35 3 31 31L10 7M10 38 39 9M30 9h9v9M9 31l8 8"/></symbol>
+<symbol id="i-crown" viewBox="0 0 48 48"><path d="m7 13 9 9 8-15 8 15 9-9-5 25H12ZM13 31h22"/></symbol>
+<symbol id="i-boot" viewBox="0 0 48 48"><path d="M16 6h19l-4 19 10 9v8H7v-9l11-8ZM18 15h15M17 22h15"/></symbol>
+<symbol id="i-spin" viewBox="0 0 48 48"><path d="M37 15A17 17 0 1 0 40 31M37 7v10H27M14 28l20-17M20 35l13-15"/></symbol>
+<symbol id="i-dash" viewBox="0 0 48 48"><path d="m22 8 17 16-17 16M10 12l13 12-13 12M3 19h9M3 29h9"/></symbol>
+<symbol id="i-meteor" viewBox="0 0 48 48"><path d="m26 6-8 14M36 4 25 21M43 13 30 26"/><circle cx="18" cy="31" r="11"/><path d="m18 24 2 5 5 2-5 2-2 5-2-5-5-2 5-2Z"/></symbol>
+<symbol id="i-heal" viewBox="0 0 48 48"><path d="M19 7h10v12h12v10H29v12H19V29H7V19h12Z"/></symbol>
+<symbol id="i-home" viewBox="0 0 48 48"><path d="m7 24 17-17 17 17M12 20v20h24V20M20 40V27h8v13"/></symbol>
+<symbol id="i-pause" viewBox="0 0 48 48"><path d="M15 9v30M33 9v30"/></symbol>
+<symbol id="i-coin" viewBox="0 0 48 48"><circle cx="24" cy="24" r="17"/><path d="M28 15h-9v9h10v9H19M24 11v26"/></symbol>
+<symbol id="i-star" viewBox="0 0 48 48"><path d="m24 5 5 13 14 1-11 9 4 14-12-8-12 8 4-14-11-9 14-1Z"/></symbol>
+<symbol id="i-sound" viewBox="0 0 48 48"><path d="M7 18h9L28 8v32L16 30H7ZM34 16q10 8 0 16M39 9q17 15 0 30"/></symbol>
+</defs></svg>
+<canvas id="world"></canvas><canvas id="bars"></canvas><div id="vignette"></div>
+<section id="lobby" class="screen">
+ <header class="lobby-top"><div class="brand"><span class="brand-mark">✦</span><div>逐风<span>HEROES OF THE RIFT</span></div></div><div class="version"><i></i> 离线战境 <b>3D / V2</b></div></header>
+ <div class="hero-copy"><div class="eyebrow">选择你的英雄 <span>01 / 03</span></div><h1 id="heroName">苍岚</h1><h2 id="heroTitle">逐风剑士</h2><p id="heroStory">剑锋所指，长风不息。穿梭战场，斩开敌方阵线。</p><div id="heroRole" class="role">近战 / 突进</div><div class="hero-skills" id="heroSkills"></div><div class="hero-stats" id="heroStats"></div></div>
+ <div class="hero-picker" id="heroPicker"></div>
+ <div class="match-card"><div class="eyebrow">经典战境 <span>5 vs 5</span></div><h3>三路争锋</h3><p>电脑队友 · 推线推塔 · 装备成长</p><button id="start" class="gold-button">进入战场 <span>→</span></button><small>单机离线 · 原创英雄与地图</small></div>
+ <div class="lobby-foot">VERSION 0.2 <span>推荐横屏 · 摇杆移动 / 技能拖动瞄准</span></div>
+</section>
+<section id="hud" class="screen hidden">
+ <div class="map-frame"><canvas id="minimap" width="180" height="180"></canvas><span>逐风峡谷</span></div>
+ <div class="top-score"><strong id="blueScore">0</strong><span>VS</span><strong id="redScore">0</strong><div id="clock">00:00</div></div>
+ <div class="top-right"><span id="kda">0 / 0 / 0</span><button id="pauseBtn" class="tiny-button" aria-label="暂停"></button></div>
+ <div id="killfeed"></div><div id="announcement" class="hidden"></div>
+ <div class="player-panel"><div id="heroBadge" class="hero-badge"></div><div class="player-bars"><div class="player-name"><span id="playerName">苍岚</span><b id="level">1</b></div><div class="meter hp"><i id="hpFill"></i><span id="hpText"></span></div><div class="meter mana"><i id="manaFill"></i></div><div class="xp-line"><i id="xpFill"></i></div></div></div>
+ <button id="shopBtn" class="shop-button"><span id="shopIcon"></span><b id="gold">450</b><small>装备</small></button>
+ <div id="inventory" class="inventory"></div>
+ <div id="joystick" class="joystick"><div class="joy-rim"></div><div id="joyKnob"></div><span>移动</span></div>
+ <div class="utility"><button id="recallBtn" aria-label="回城"></button><button id="healBtn" aria-label="恢复"></button></div>
+ <div id="cancelAim" class="hidden">移到这里取消施法</div>
+ <div class="combat"><button id="attackBtn" class="attack-button" aria-label="持续普攻"><span id="attackIcon"></span><small>普攻</small></button><div id="skillButtons"></div></div>
+ <div id="deathOverlay" class="hidden"><b>正在重整旗鼓</b><span>复活倒计时 <strong id="respawn">10</strong> 秒</span><small>可在等待期间购买装备</small></div>
+ <div id="tutorial"><b>跟随兵线推进</b><span>左侧摇杆移动 · 按住普攻追击 · 拖动技能瞄准</span><button id="dismissTutorial">知道了</button></div>
+</section>
+<div id="modal" class="modal hidden"><div id="modalContent" class="modal-card"></div></div>
+<div id="toast" class="hidden"></div><div id="portrait">请横屏游玩<span>旋转手机，进入逐风战境</span></div>
+<script type="module" src="game.mjs"></script></body></html>

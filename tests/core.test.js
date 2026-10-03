@@ -1,24 +1,8 @@
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const { clamp, distance, inRange, applyDamage } = require("../android/app/src/main/assets/core.js");
-
-test("clamp keeps movement within the lane", () => {
-  assert.equal(clamp(12, 0, 10), 10);
-  assert.equal(clamp(-2, 0, 10), 0);
-  assert.equal(clamp(5, 0, 10), 5);
-});
-
-test("range checks use two-dimensional distance", () => {
-  const a = { x: 0, y: 0 }, b = { x: 3, y: 4 };
-  assert.equal(distance(a, b), 5);
-  assert.equal(inRange(a, b, 5), true);
-  assert.equal(inRange(a, b, 4.99), false);
-});
-
-test("damage cannot heal or drive health below zero", () => {
-  const unit = { hp: 12 };
-  assert.deepEqual(applyDamage(unit, 5), { dealt: 5, killed: false });
-  assert.deepEqual(applyDamage(unit, 50), { dealt: 7, killed: true });
-  assert.equal(unit.hp, 0);
-  assert.deepEqual(applyDamage(unit, 1), { dealt: 0, killed: false });
-});
+const test=require('node:test');const assert=require('node:assert/strict');
+const load=()=>import('../android/app/src/main/assets/engine.mjs');
+test('base remains protected until both towers in one lane are destroyed',async()=>{const {Arena}=await load(),a=new Arena(),base=a.units.find(u=>u.type==='base'&&u.team===1);assert.equal(a.damage(a.player,base,500),0);const towers=a.units.filter(u=>u.type==='tower'&&u.team===1&&u.lane===1);towers[0].alive=false;assert.equal(a.damage(a.player,base,500),0);towers[1].alive=false;assert.ok(a.damage(a.player,base,500)>0);a.damage(a.player,base,10000);assert.equal(a.winner,0);const time=a.time;a.tick(.1);assert.equal(a.time,time);});
+test('abilities enforce mana, cooldown, and ultimate level',async()=>{const {Arena}=await load(),a=new Arena('mage'),h=a.player;assert.equal(a.cast(h,3),false);assert.equal(h.mana,420);assert.equal(a.cast(h,0,{x:1,z:0}),true);assert.equal(h.mana,390);assert.equal(a.cast(h,0),false);a.addXp(h,600);assert.ok(h.level>=4);assert.equal(a.cast(h,3),true);assert.ok(a.effects.some(e=>e.kind==='meteor'));h.skillCd[1]=0;h.mana=0;assert.equal(a.cast(h,1),false);});
+test('equipment purchase is atomic and limited to six slots',async()=>{const {Arena}=await load(),a=new Arena(),h=a.player;const attack=h.attack;assert.equal(a.buy('blade').ok,false);assert.equal(h.attack,attack);assert.equal(h.inventory.length,0);assert.equal(h.gold,450);assert.equal(a.buy('boots').ok,true);assert.equal(h.gold,200);h.gold=10000;for(let i=0;i<5;i++)assert.equal(a.buy('armor').ok,true);const hp=h.maxHealth,gold=h.gold;assert.equal(a.buy('armor').ok,false);assert.equal(h.gold,gold);assert.equal(h.maxHealth,hp);});
+test('towers prioritize minions and respawning heroes regain full health',async()=>{const {Arena}=await load(),a=new Arena(),tower=a.units.find(u=>u.type==='tower'&&u.team===1&&u.lane===1);const hero=a.player;hero.x=tower.x+3;hero.z=tower.z;const minion=a.spawn({type:'minion',team:0,lane:1,x:tower.x+2,z:tower.z,health:100,attack:0,armor:0,speed:0,range:2,rate:1,radius:.7,pathIndex:1});a.tick(.01);const shot=a.shots.find(s=>s.source===tower.id);assert.equal(shot.target,minion.id);a.damage(tower,hero,100000);assert.equal(hero.alive,false);assert.equal(hero.deaths,1);for(let i=0;i<110;i++)a.tick(.1);assert.equal(hero.alive,true);assert.equal(hero.health,hero.maxHealth);assert.ok(Number.isFinite(a.teamKills[1]));});
+test('effect IDs are unique and recall cancels on movement and damage',async()=>{const {Arena}=await load(),a=new Arena();a.cast(a.player,1);a.cast(a.player,2);a.heal();assert.equal(new Set(a.effects.map(e=>e.id)).size,a.effects.length);assert.ok(a.effects.every(e=>e.id!==a.player.id));assert.ok(a.effects.some(e=>e.kind==='shield'));a.recall();a.tick(.1,{x:1,z:0});assert.equal(a.player.recall,0);a.recall();const foe=a.units.find(u=>u.type==='hero'&&u.team===1);a.damage(foe,a.player,10);assert.equal(a.player.recall,0);});
+test('computer teams push lanes, fight, level up and buy equipment',async()=>{const {Arena}=await load(),a=new Arena();for(let i=0;i<2400&&a.winner===null;i++){a.tick(.1);a.events.length=0;}assert.ok(a.wave>5);assert.ok(a.teamKills[0]+a.teamKills[1]>3);assert.ok(a.units.some(u=>u.type==='hero'&&!u.isPlayer&&u.inventory.length>=2));assert.ok(a.units.some(u=>u.type==='tower'&&!u.alive));for(const u of a.units){assert.ok(Number.isFinite(u.x)&&Number.isFinite(u.z)&&Number.isFinite(u.health));assert.ok(u.health>=0&&u.health<=u.maxHealth);}console.log('Simulation:',JSON.stringify({time:a.time,score:a.teamKills,destroyedTowers:a.units.filter(u=>u.type==='tower'&&!u.alive).length,winner:a.winner}));});
