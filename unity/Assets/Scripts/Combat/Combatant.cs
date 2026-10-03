@@ -15,6 +15,7 @@ namespace SkyStrike.Combat
         [SerializeField, Min(0)] float maxMana = 260;
         public int Team => team;
         public UnitKind Kind => kind;
+        public Vector3 HitPoint => transform.position + ((kind == UnitKind.Tower || kind == UnitKind.Base) ? Vector3.zero : Vector3.up);
         public float Health { get; private set; }
         public float Mana { get; private set; }
         public float MaxHealth => maxHealth;

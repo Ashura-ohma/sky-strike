@@ -18,6 +18,16 @@ namespace SkyStrike.Tests
             Assert.That(target.Health, Is.EqualTo(80)); Assert.That(shot.activeSelf, Is.False);
             Object.Destroy(sourceObject); Object.Destroy(targetObject); Object.Destroy(shot);
         }
+        [UnityTest] public IEnumerator ManualShotCanHitElevatedTowerRoot()
+        {
+            GameObject a = new GameObject("source"), b = new GameObject("tower"), shot = new GameObject("shot");
+            Combatant source = a.AddComponent<Combatant>(); source.Configure(0, UnitKind.Hero, 100, 0);
+            Combatant tower = b.AddComponent<Combatant>(); tower.Configure(1, UnitKind.Tower, 100, 0); tower.transform.position = new Vector3(4, 1, 0);
+            shot.AddComponent<PooledProjectile>().Launch(source, null, Vector3.up, Vector3.right, 20, 20, 8, .3f, 0, false);
+            yield return new WaitForSeconds(.3f);
+            Assert.That(tower.Health, Is.EqualTo(80));
+            Object.Destroy(a); Object.Destroy(b); Object.Destroy(shot);
+        }
         [UnityTest] public IEnumerator OldProjectileCannotDamageRespawnedTarget()
         {
             GameObject a = new GameObject("source"), b = new GameObject("target"), shot = new GameObject("shot");

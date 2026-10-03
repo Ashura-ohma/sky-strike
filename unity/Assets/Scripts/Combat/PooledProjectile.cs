@@ -22,7 +22,7 @@ namespace SkyStrike.Combat
             if (source == null || !source.Alive || source.LifeVersion != sourceLife) { Retire(); return; }
             if (targeted && (target == null || !target.Alive || target.LifeVersion != targetLife)) { Retire(); return; }
             Vector3 start = transform.position;
-            if (target != null) direction = (target.transform.position + Vector3.up - start).normalized;
+            if (target != null) direction = (target.HitPoint - start).normalized;
             float step = Mathf.Min(remaining, speed * Time.deltaTime);
             Vector3 end = start + direction * step;
             Combatant hit = null; float nearest = float.MaxValue;
@@ -30,7 +30,7 @@ namespace SkyStrike.Combat
             {
                 Combatant c = Combatant.Active[i];
                 if (!c.Alive || c.Team == source.Team || (target != null && c != target)) continue;
-                Vector3 center = c.transform.position + Vector3.up;
+                Vector3 center = c.HitPoint;
                 float t = Mathf.Clamp01(Vector3.Dot(center - start, end - start) / Mathf.Max(.0001f, (end - start).sqrMagnitude));
                 if ((center - Vector3.Lerp(start, end, t)).sqrMagnitude <= (radius + .45f) * (radius + .45f) && t < nearest)
                 { hit = c; nearest = t; }

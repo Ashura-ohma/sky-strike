@@ -13,7 +13,7 @@ This independent Unity 6/C# project lives under `unity/` on `unity-moba`. The ol
 - Fixed projectile pool, health/mana, stun, death/respawn, one AI hero, bounded minion waves, towers/bases and one small lane
 - Ilyra, an original dual-capacitor courier: Capacitor Volley leaves a retrievable charge, Slipstream Step dashes, Tether Spark briefly immobilizes, Horizon Lance is a long-range shot
 - CC0 real skinned Quaternius FBX, 79 bones and 24 source clips. SWAT appearance and shared skill clips are visibly provisional, not final fantasy character art
-- URP mobile configuration, scene/prefab/Animator/ScriptableObject authoring command, 26 EditMode and 3 PlayMode tests
+- URP mobile configuration, scene/prefab/Animator/ScriptableObject authoring command, 26 EditMode and 6 PlayMode tests
 - Isolated Unity Android workflow; no WebView, Three.js, JavaScript gameplay, old heroes or old APK fallback
 
 ## Open in Unity
@@ -24,10 +24,12 @@ Controls: left floating joystick; ATTACK taps select/chase/fire; TARGET cycles e
 
 ## Verification
 
-- PASS: source/runtime and editor C# reference compilation using official installed Unity DLLs, with no fake stubs
-- PASS: source asset skeletal weights, animation deformation and license audit
-- NOT RUN: Unity project import, native EditMode/PlayMode tests, scene generation, Android player build, visual QA, multitouch/device input, frame-time/GC/thermal tests
-- BLOCKED: this cloud executor cannot establish Unity Licensing Client/Package Manager IPC; no Unity account/license has been activated
-- C# reference compilation uses the official URP template DLL cache, which may differ from manifest package versions. It is not a substitute for native compilation or tests
+- PASS: genuine Unity Editor generated Runtime, Editor, EditModeTests and PlayModeTests assemblies during initial import (2026-10-03)
+- PASS: latest runtime/editor/test source reference compilation against the actual imported package DLLs (not fake stubs)
+- PASS: source asset skeletal weights, animation deformation and CC0 license audit
+- NOT COMPLETE: full native asset import and scene/prefab generation. The authoring method produced partial animation assets before this cloud host stalled repeatedly; the sequential-Bee attempt's log stopped advancing and its Editor was observed in disk-sleep state
+- NOT RUN: native test execution, Android player build, visual QA, multitouch/device input, frame-time/GC/thermal tests
+- The final source changes add a shared projectile hit point so manual shots can hit raised tower/base roots, a regression for that hit, and two real-Animator timing/cancellation tests
+- No APK artifact or playable-release claim. This remains a resumable source checkpoint
 
 See [build setup](Documentation/BUILD.md), [acceptance checklist](Documentation/ACCEPTANCE.md), and [asset provenance](Assets/Art/Characters/Quaternius/Swat/README.md).

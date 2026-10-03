@@ -35,13 +35,13 @@ namespace SkyStrike.Abilities
             if (definition == null || CooldownRemaining(index) > 0 || owner.Mana < definition.manaCost) return false;
             Combatant target = targeting.Acquire(definition.range);
             aim.y = 0;
-            if (smart && target != null && definition.type != AbilityType.Dash) aim = target.transform.position - transform.position;
+            if (smart && target != null && definition.type != AbilityType.Dash) aim = target.HitPoint - owner.HitPoint;
             if (aim.sqrMagnitude < .001f) aim = transform.forward;
             pointStrength = smart ? 1 : Mathf.Clamp01(aim.magnitude);
             aim.Normalize();
             if (!smart && definition.allowAssistForManualAim && target != null)
             {
-                Vector3 toward = (target.transform.position - transform.position).normalized;
+                Vector3 toward = (target.HitPoint - owner.HitPoint).normalized;
                 if (Vector3.Angle(aim, toward) <= definition.aimAssistAngle)
                     aim = Vector3.Slerp(aim, toward, definition.aimAssistStrength).normalized;
             }

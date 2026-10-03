@@ -4,7 +4,7 @@
 - [ ] Package import and project compilation complete without errors
 - [ ] Scene generator creates Battle, URP assets, Animator, prefabs, ScriptableObjects and baked NavMesh
 - [ ] Real model imports at ~1.81 m, is visible, animated and faces intended forward direction
-- [ ] All 26 EditMode and 3 PlayMode tests pass in Unity
+- [ ] All 26 EditMode and 6 PlayMode tests pass in Unity
 - [ ] Genuine ARM64 IL2CPP APK generated, artifact downloaded and installed
 
 ## Device flow

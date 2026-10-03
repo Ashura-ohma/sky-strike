@@ -27,6 +27,20 @@ jobs:
             echo '::error::Unity license prerequisites are not configured. No Unity tests or APK build have run. Follow unity/Documentation/BUILD.md; never commit or log credentials.'
             exit 1
           fi
+      - name: Author native scene and real Animator assets before integration tests
+        uses: game-ci/unity-builder@4423ee75828dff56037d1d1cfdac6b68e3a6ba00 # v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          BEE_BUILD_THREADS: 1
+        with:
+          projectPath: unity
+          unityVersion: 6000.0.58f2
+          targetPlatform: Android
+          buildMethod: SkyStrike.Editor.BuildProject.Create
+          versioning: None
+          allowDirtyBuild: true
       - name: Run native EditMode and PlayMode tests
         uses: game-ci/unity-test-runner@32e57712352b500e17974b245a6dce9e11a73213 # v4
         env:
@@ -50,6 +64,7 @@ jobs:
           targetPlatform: Android
           buildMethod: SkyStrike.Editor.BuildProject.Android
           versioning: None
+          allowDirtyBuild: true
       - name: Upload APK only after successful native build
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
