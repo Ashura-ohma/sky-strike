@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HitParticles: {fileID: 6894117751411291394}
---- !u!1 &3619702143355573295
+--- !u!1 &4137957920742684705
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -193,9 +193,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7059541415538100036}
-  - component: {fileID: 4793569422125778222}
-  - component: {fileID: 6204271767581935981}
+  - component: {fileID: 3124447139638076217}
+  - component: {fileID: 5474338439175133216}
+  - component: {fileID: 1655384453877245870}
   m_Layer: 0
   m_Name: Arc capacitor sidearm
   m_TagString: Untagged
@@ -203,36 +203,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7059541415538100036
+--- !u!4 &3124447139638076217
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3619702143355573295}
+  m_GameObject: {fileID: 4137957920742684705}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.04, z: 0.14}
-  m_LocalScale: {x: 0.08, y: 0.18, z: 0.08}
+  m_LocalRotation: {x: 0.7071069, y: 0.00000004470348, z: 0.00000005133915, w: 0.7071067}
+  m_LocalPosition: {x: -0.0000000014933901, y: 0.00040000456, z: 0.0014000013}
+  m_LocalScale: {x: 0.0007999996, y: 0.0017999992, z: 0.00079999975}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8498630643511561578}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &4793569422125778222
+--- !u!33 &5474338439175133216
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3619702143355573295}
+  m_GameObject: {fileID: 4137957920742684705}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &6204271767581935981
+--- !u!23 &1655384453877245870
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3619702143355573295}
+  m_GameObject: {fileID: 4137957920742684705}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -297,9 +297,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6054011492882569421}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.04, z: 0.14}
-  m_LocalScale: {x: 0.08, y: 0.18, z: 0.08}
+  m_LocalRotation: {x: 0.7071068, y: -0.000000010244548, z: -0.00000007777999, w: 0.7071068}
+  m_LocalPosition: {x: 3.67436e-10, y: 0.00040000447, z: 0.0014000004}
+  m_LocalScale: {x: 0.00080000045, y: 0.0017999995, z: 0.00080000015}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3567828844909664199}
@@ -463,9 +463,9 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
-  scalingMode: 1
+  scalingMode: 2
   randomSeed: 0
   InitialModule:
     serializedVersion: 3
@@ -5195,7 +5195,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: f8caaede408cf0b89a935c23723b1f02, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5344,7 +5344,7 @@ PrefabInstance:
       addedObject: {fileID: 4072108264215431139}
     - targetCorrespondingSourceObject: {fileID: 320179479428049405, guid: 868d175ce9dbca6f5bd3403e8da0dd2d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7059541415538100036}
+      addedObject: {fileID: 3124447139638076217}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 868d175ce9dbca6f5bd3403e8da0dd2d, type: 3}
       insertIndex: -1

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="29" result="Passed" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.1709632">
+  <test-suite type="TestSuite" id="1000" name="Sky Strike · Arc Courier" fullname="Sky Strike · Arc Courier" runstate="Runnable" testcasecount="29" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.170963" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1033" name="SkyStrike.EditModeTests.dll" fullname="/workspace/scratch/68ae2f41b4a7/unity-moba-work/unity/Library/ScriptAssemblies/SkyStrike.EditModeTests.dll" runstate="Runnable" testcasecount="29" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.164553" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="15305" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1034" name="SkyStrike" fullname="SkyStrike" runstate="Runnable" testcasecount="29" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.164232" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1035" name="Tests" fullname="SkyStrike.Tests" runstate="Runnable" testcasecount="29" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.164054" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1036" name="Input" fullname="SkyStrike.Tests.Input" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.069797" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1014" name="TouchInputTests" fullname="SkyStrike.Tests.Input.TouchInputTests" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.068797" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1032" name="EventSystemSetup_UsesIndependentNewInputSystemPointersAndIsIdempotent" fullname="SkyStrike.Tests.Input.TouchInputTests.EventSystemSetup_UsesIndependentNewInputSystemPointersAndIsIdempotent" methodname="EventSystemSetup_UsesIndependentNewInputSystemPointersAndIsIdempotent" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1638487869" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.038174" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1019" name="Joystick_FocusLossAndPauseClearPointerCapture" fullname="SkyStrike.Tests.Input.TouchInputTests.Joystick_FocusLossAndPauseClearPointerCapture" methodname="Joystick_FocusLossAndPauseClearPointerCapture" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1549048014" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.005122" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1020" name="Joystick_ReleaseReportsExactZeroEvenAtDeadZoneBoundary" fullname="SkyStrike.Tests.Input.TouchInputTests.Joystick_ReleaseReportsExactZeroEvenAtDeadZoneBoundary" methodname="Joystick_ReleaseReportsExactZeroEvenAtDeadZoneBoundary" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="2071208723" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.003386" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1018" name="Joystick_ReleaseStopsImmediatelyAndCannotBeStolenBySecondFinger" fullname="SkyStrike.Tests.Input.TouchInputTests.Joystick_ReleaseStopsImmediatelyAndCannotBeStolenBySecondFinger" methodname="Joystick_ReleaseStopsImmediatelyAndCannotBeStolenBySecondFinger" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1833016709" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000716" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1017" name="Joystick_UsesFloatingOriginAndRemappedMagnitude" fullname="SkyStrike.Tests.Input.TouchInputTests.Joystick_UsesFloatingOriginAndRemappedMagnitude" methodname="Joystick_UsesFloatingOriginAndRemappedMagnitude" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1483194984" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000446" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1028" name="MovementAndAbilityHaveIndependentPointerOwnership" fullname="SkyStrike.Tests.Input.TouchInputTests.MovementAndAbilityHaveIndependentPointerOwnership" methodname="MovementAndAbilityHaveIndependentPointerOwnership" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1557751447" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.001854" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1016" name="RadialDeadZone_DiagonalNeverExceedsUnitLength" fullname="SkyStrike.Tests.Input.TouchInputTests.RadialDeadZone_DiagonalNeverExceedsUnitLength" methodname="RadialDeadZone_DiagonalNeverExceedsUnitLength" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1172161078" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000335" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1015" name="RadialDeadZone_IsZeroInsideAndContinuousAtEdge" fullname="SkyStrike.Tests.Input.TouchInputTests.RadialDeadZone_IsZeroInsideAndContinuousAtEdge" methodname="RadialDeadZone_IsZeroInsideAndContinuousAtEdge" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="343680931" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000375" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1031" name="RightMouseReleaseDoesNotEndLeftMouseGestures" fullname="SkyStrike.Tests.Input.TouchInputTests.RightMouseReleaseDoesNotEndLeftMouseGestures" methodname="RightMouseReleaseDoesNotEndLeftMouseGestures" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="275473290" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000423" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1022" name="Skill_DragModeIsStickyAfterReturningToOrigin" fullname="SkyStrike.Tests.Input.TouchInputTests.Skill_DragModeIsStickyAfterReturningToOrigin" methodname="Skill_DragModeIsStickyAfterReturningToOrigin" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1430978079" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000790" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1029" name="Skill_FocusLossPauseAndExplicitResetDoNotCast" fullname="SkyStrike.Tests.Input.TouchInputTests.Skill_FocusLossPauseAndExplicitResetDoNotCast" methodname="Skill_FocusLossPauseAndExplicitResetDoNotCast" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1022068431" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000658" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1023" name="Skill_HoldWithoutMotionEntersManualAim" fullname="SkyStrike.Tests.Input.TouchInputTests.Skill_HoldWithoutMotionEntersManualAim" methodname="Skill_HoldWithoutMotionEntersManualAim" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1385439397" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000576" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1030" name="Skill_InterruptedDragDoesNotCast" fullname="SkyStrike.Tests.Input.TouchInputTests.Skill_InterruptedDragDoesNotCast" methodname="Skill_InterruptedDragDoesNotCast" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1066396449" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000483" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1026" name="Skill_LeavingCancelZoneRearmsTheSameManualGesture" fullname="SkyStrike.Tests.Input.TouchInputTests.Skill_LeavingCancelZoneRearmsTheSameManualGesture" methodname="Skill_LeavingCancelZoneRearmsTheSameManualGesture" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="289936586" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000673" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1025" name="Skill_ReleaseOverCancelZoneNeverCasts" fullname="SkyStrike.Tests.Input.TouchInputTests.Skill_ReleaseOverCancelZoneNeverCasts" methodname="Skill_ReleaseOverCancelZoneNeverCasts" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1589924596" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000570" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1024" name="Skill_ReleaseUsesFinalPositionEvenWithoutDragCallback" fullname="SkyStrike.Tests.Input.TouchInputTests.Skill_ReleaseUsesFinalPositionEvenWithoutDragCallback" methodname="Skill_ReleaseUsesFinalPositionEvenWithoutDragCallback" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1543097674" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000451" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1021" name="Skill_TapSmartcastsExactlyOnceOnRelease" fullname="SkyStrike.Tests.Input.TouchInputTests.Skill_TapSmartcastsExactlyOnceOnRelease" methodname="Skill_TapSmartcastsExactlyOnceOnRelease" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1764898243" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000460" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1027" name="Skill_WrongPointerCannotReleaseOrRedirectCapturedGesture" fullname="SkyStrike.Tests.Input.TouchInputTests.Skill_WrongPointerCannotReleaseOrRedirectCapturedGesture" methodname="Skill_WrongPointerCannotReleaseOrRedirectCapturedGesture" classname="SkyStrike.Tests.Input.TouchInputTests" runstate="Runnable" seed="1339324036" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000419" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+          <test-suite type="TestFixture" id="1001" name="PlayerAssetRegressionTests" fullname="SkyStrike.Tests.PlayerAssetRegressionTests" classname="SkyStrike.Tests.PlayerAssetRegressionTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.085816" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1003" name="BattleSerializesEveryRuntimeMeshAndShaderDependency" fullname="SkyStrike.Tests.PlayerAssetRegressionTests.BattleSerializesEveryRuntimeMeshAndShaderDependency" methodname="BattleSerializesEveryRuntimeMeshAndShaderDependency" classname="SkyStrike.Tests.PlayerAssetRegressionTests" runstate="Runnable" seed="441176545" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.044197" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1004" name="PlayerRuntimeDoesNotDependOnDynamicBuiltinLookup" fullname="SkyStrike.Tests.PlayerAssetRegressionTests.PlayerRuntimeDoesNotDependOnDynamicBuiltinLookup" methodname="PlayerRuntimeDoesNotDependOnDynamicBuiltinLookup" classname="SkyStrike.Tests.PlayerAssetRegressionTests" runstate="Runnable" seed="2111143790" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.004197" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1002" name="SidearmsStayHandSizedInImportedRigWorldSpace" fullname="SkyStrike.Tests.PlayerAssetRegressionTests.SidearmsStayHandSizedInImportedRigWorldSpace" methodname="SidearmsStayHandSizedInImportedRigWorldSpace" classname="SkyStrike.Tests.PlayerAssetRegressionTests" runstate="Runnable" seed="839644577" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.035602" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1005" name="TargetingTests" fullname="SkyStrike.Tests.TargetingTests" classname="SkyStrike.Tests.TargetingTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.008078" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1008" name="DeadLockReacquires" fullname="SkyStrike.Tests.TargetingTests.DeadLockReacquires" methodname="DeadLockReacquires" classname="SkyStrike.Tests.TargetingTests" runstate="Runnable" seed="681392297" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.002261" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1013" name="DeathEventOccursOnce" fullname="SkyStrike.Tests.TargetingTests.DeathEventOccursOnce" methodname="DeathEventOccursOnce" classname="SkyStrike.Tests.TargetingTests" runstate="Runnable" seed="1271023915" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000545" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1011" name="FriendlyCannotBeManuallyLocked" fullname="SkyStrike.Tests.TargetingTests.FriendlyCannotBeManuallyLocked" methodname="FriendlyCannotBeManuallyLocked" classname="SkyStrike.Tests.TargetingTests" runstate="Runnable" seed="2097664046" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000294" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1006" name="HeroPriorityWinsOverNearMinion" fullname="SkyStrike.Tests.TargetingTests.HeroPriorityWinsOverNearMinion" methodname="HeroPriorityWinsOverNearMinion" classname="SkyStrike.Tests.TargetingTests" runstate="Runnable" seed="294109759" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000294" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1010" name="LowestAbsoluteAndPercentDiffer" fullname="SkyStrike.Tests.TargetingTests.LowestAbsoluteAndPercentDiffer" methodname="LowestAbsoluteAndPercentDiffer" classname="SkyStrike.Tests.TargetingTests" runstate="Runnable" seed="1929339194" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000364" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1009" name="OutOfRangeLockReacquires" fullname="SkyStrike.Tests.TargetingTests.OutOfRangeLockReacquires" methodname="OutOfRangeLockReacquires" classname="SkyStrike.Tests.TargetingTests" runstate="Runnable" seed="1379590212" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000363" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1012" name="RestoreIncrementsLifeVersion" fullname="SkyStrike.Tests.TargetingTests.RestoreIncrementsLifeVersion" methodname="RestoreIncrementsLifeVersion" classname="SkyStrike.Tests.TargetingTests" runstate="Runnable" seed="1889147510" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000338" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1007" name="StickyTargetDoesNotJitterWhenCloserEnemyAppears" fullname="SkyStrike.Tests.TargetingTests.StickyTargetDoesNotJitterWhenCloserEnemyAppears" methodname="StickyTargetDoesNotJitterWhenCloserEnemyAppears" classname="SkyStrike.Tests.TargetingTests" runstate="Runnable" seed="447169162" result="Passed" start-time="2026-10-03 23:24:12Z" end-time="2026-10-03 23:24:12Z" duration="0.000370" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: /dev/shm/codex-orbit-desktop/runtime-zDHiIL/config/unity3d/Sky Strike/Sky Strike · Arc Courier/TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -50,3 +50,9 @@ Unity completed Android ARM64 IL2CPP native compilation. Its first integrated Gr
 Packaging the same Unity-generated Gradle project with Gradle 8.11, the existing tool-provided proxy, the existing system Java truststore, two workers and TLS validation enabled completed successfully: `assembleDebug`, 53 tasks, exit 0. No untrusted repository, TLS bypass or gameplay fallback was used. This was external completion of Unity's generated Gradle project; the earlier Unity BuildReport itself recorded failure.
 
 APK verification: package `com.skystrike.arccourier.unity`, version 0.1.0, min SDK 26, target SDK 36, ARM64; APK v2 signature valid; `libunity.so` and `libil2cpp.so` present. See `Validation/android-build.json` for size and SHA-256. No physical-phone or 60 FPS claim is made.
+
+## Alpha2 phone-reported rendering regression (2026-10-03)
+
+The alpha1 phone screenshot exposed oversized cyan sidearms, magenta hit particles, missing CapsuleCollider errors and a null shader exception. The FBX wrist hierarchy uses a 100x centimeter conversion scale; sidearm offsets and dimensions now compensate that baseline in world meters. Hit particles and skill telegraphs have serialized URP particle materials. Runtime towers, bases and retrieval markers use serialized built-in meshes instead of dynamic CreatePrimitive calls, avoiding implicit stripped collider dependencies. Runtime Shader.Find calls were removed.
+
+Native regression validation: 29 EditMode tests and 8 PlayMode tests passed. The new checks include all 11 animation clips sampled at four points for bounded sidearm size and wrist distance, explicit scene mesh/material references, particle materials, and absence of runtime dynamic shader/primitive lookup. These are headless native checks; the replacement APK still needs visual confirmation on the user's phone.

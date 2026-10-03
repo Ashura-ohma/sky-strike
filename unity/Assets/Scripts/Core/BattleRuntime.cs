@@ -15,6 +15,8 @@ namespace SkyStrike.Core
     public sealed class BattleRuntime : MonoBehaviour
     {
         public GameObject HeroPrefab;
+        public Mesh CylinderMesh, CubeMesh;
+        public Material WorldMaterial, IndicatorMaterial;
         public HeroDefinition Hero;
         public PooledProjectile ProjectilePrefab;
         public FloatingJoystick Joystick;
@@ -45,7 +47,7 @@ namespace SkyStrike.Core
             controller.Joystick = Joystick; controller.Skills = Skills; controller.CameraTransform = Camera.transform;
             AttackButton.onClick.AddListener(controller.Attack); TargetButton.onClick.AddListener(controller.SwitchTarget);
             Camera.Target = player.transform;
-            AbilityIndicator indicator = player.gameObject.AddComponent<AbilityIndicator>(); indicator.Hero = Hero; indicator.Buttons = Skills; indicator.CameraTransform = Camera.transform;
+            AbilityIndicator indicator = player.gameObject.AddComponent<AbilityIndicator>(); indicator.IndicatorMaterial = IndicatorMaterial; indicator.Hero = Hero; indicator.Buttons = Skills; indicator.CameraTransform = Camera.transform;
             for (int i = 0; i < minions.Length; i++)
             {
                 minions[i] = Spawn("Minion " + i, new Vector3(i % 2 == 0 ? -21 : 21, 0, 0), i % 2, UnitKind.Minion);
@@ -63,14 +65,13 @@ namespace SkyStrike.Core
             unit.GetComponent<AttackController>().Configure(Hero, projectiles);
             unit.GetComponent<AbilityController>().Configure(Hero, projectiles);
             if (kind == UnitKind.Minion) unit.transform.GetChild(0).localScale *= .65f;
-            GameObject mark = GameObject.CreatePrimitive(PrimitiveType.Cylinder); mark.name = "Capacitor retrieval marker";
-            Destroy(mark.GetComponent<Collider>()); mark.transform.localScale = new Vector3(1.3f, .03f, 1.3f);
+            GameObject mark = MeshObject("Capacitor retrieval marker", CylinderMesh); mark.transform.localScale = new Vector3(1.3f, .03f, 1.3f);
             SetColor(mark, Color.yellow); unit.GetComponent<WeaponRetrieve>().Configure(mark.transform);
             return combatant;
         }
         Combatant Building(string name, Vector3 position, int team, UnitKind kind, float hp, Color color)
         {
-            GameObject root = GameObject.CreatePrimitive(kind == UnitKind.Tower ? PrimitiveType.Cylinder : PrimitiveType.Cube);
+            GameObject root = MeshObject(name, kind == UnitKind.Tower ? CylinderMesh : CubeMesh);
             root.name = name; root.transform.position = position + Vector3.up;
             root.transform.localScale = kind == UnitKind.Tower ? new Vector3(1.3f, 2, 1.3f) : new Vector3(2, 2, 2);
             NavMeshObstacle obstacle = root.AddComponent<NavMeshObstacle>(); obstacle.carving = true; obstacle.shape = NavMeshObstacleShape.Box; obstacle.size = Vector3.one;
@@ -79,10 +80,18 @@ namespace SkyStrike.Core
             StructureAttack weapon = root.AddComponent<StructureAttack>(); weapon.Pool = projectiles;
             return c;
         }
+        GameObject MeshObject(string name, Mesh mesh)
+        {
+            GameObject go = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer));
+            go.GetComponent<MeshFilter>().sharedMesh = mesh;
+            go.GetComponent<Renderer>().sharedMaterial = WorldMaterial;
+            return go;
+        }
         static void SetColor(GameObject go, Color color)
         {
-            Material material = new Material(Shader.Find("Universal Render Pipeline/Lit")); material.color = color;
-            go.GetComponent<Renderer>().sharedMaterial = material;
+            var properties = new MaterialPropertyBlock();
+            properties.SetColor("_BaseColor", color);
+            go.GetComponent<Renderer>().SetPropertyBlock(properties);
         }
         void Update()
         {

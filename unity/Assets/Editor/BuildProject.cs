@@ -103,6 +103,13 @@ namespace SkyStrike.Editor
             cameraObject.AddComponent<AudioListener>(); FollowCamera follow = cameraObject.AddComponent<FollowCamera>();
             cameraObject.transform.SetPositionAndRotation(new Vector3(-18, 12, -14), Quaternion.Euler(45, 0, 0));
             BattleRuntime battle = new GameObject("Battle runtime").AddComponent<BattleRuntime>();
+            GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            battle.CylinderMesh = cylinder.GetComponent<MeshFilter>().sharedMesh;
+            battle.CubeMesh = cube.GetComponent<MeshFilter>().sharedMesh;
+            UnityEngine.Object.DestroyImmediate(cylinder); UnityEngine.Object.DestroyImmediate(cube);
+            battle.WorldMaterial = Material("RuntimeWorld", Color.white);
+            battle.IndicatorMaterial = ParticleMaterial();
             battle.HeroPrefab = hero; battle.Hero = data; battle.ProjectilePrefab = projectile; battle.Camera = follow;
             CreateUI(battle);
             Mark("scene.save.begin");
@@ -122,7 +129,7 @@ namespace SkyStrike.Editor
             PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevelAuto;
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android, ScriptingImplementation.IL2CPP);
-            PlayerSettings.Android.useCustomKeystore = false; PlayerSettings.bundleVersion = "0.1.0";
+            PlayerSettings.Android.useCustomKeystore = false; PlayerSettings.bundleVersion = "0.1.1"; PlayerSettings.Android.bundleVersionCode = 2;
             PlayerSettings.colorSpace = ColorSpace.Linear;
             var settings = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/ProjectSettings.asset")[0]);
             settings.FindProperty("activeInputHandler").intValue = 1; settings.ApplyModifiedPropertiesWithoutUndo();
@@ -205,8 +212,12 @@ namespace SkyStrike.Editor
                 Mark("hero.weapon.begin." + bone.name);
                 GameObject weapon = GameObject.CreatePrimitive(PrimitiveType.Capsule); weapon.name = "Arc capacitor sidearm";
                 UnityEngine.Object.DestroyImmediate(weapon.GetComponent<Collider>()); weapon.transform.SetParent(bone, false);
-                weapon.transform.localPosition = new Vector3(0, .04f, .14f); weapon.transform.localRotation = Quaternion.Euler(90, 0, 0);
-                weapon.transform.localScale = new Vector3(.08f, .18f, .08f); weapon.GetComponent<Renderer>().sharedMaterial = Material("Capacitor", Color.cyan);
+                // FBX wrist bones carry centimeter conversion scale; author offsets and
+                // dimensions in world meters rather than inheriting that scale.
+                weapon.transform.position = bone.position + bone.rotation * new Vector3(0, .04f, .14f);
+                weapon.transform.rotation = bone.rotation * Quaternion.Euler(90, 0, 0);
+                Vector3 inherited = bone.lossyScale;
+                weapon.transform.localScale = new Vector3(.08f / Mathf.Abs(inherited.x), .18f / Mathf.Abs(inherited.y), .08f / Mathf.Abs(inherited.z)); weapon.GetComponent<Renderer>().sharedMaterial = Material("Capacitor", Color.cyan);
             }
             Mark("hero.components.begin");
             NavMeshAgent agent = root.AddComponent<NavMeshAgent>(); agent.radius = .38f; agent.height = 1.8f; agent.baseOffset = 0;
@@ -217,6 +228,10 @@ namespace SkyStrike.Editor
             GameObject particles = new GameObject("Hit sparks"); particles.transform.SetParent(root.transform, false); particles.transform.localPosition = Vector3.up;
             ParticleSystem ps = particles.AddComponent<ParticleSystem>(); var main = ps.main; main.playOnAwake = false; main.loop = false; main.duration = .2f; main.startLifetime = .2f; main.startSpeed = 2; main.startSize = .12f; main.maxParticles = 12;
             var emission = ps.emission; emission.rateOverTime = 0; emission.SetBursts(new[] { new ParticleSystem.Burst(0, 8) });
+            var particleRenderer = particles.GetComponent<ParticleSystemRenderer>();
+            particleRenderer.sharedMaterial = ParticleMaterial();
+            main.scalingMode = ParticleSystemScalingMode.Shape;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
             root.AddComponent<HitFeedback>().HitParticles = ps;
             Mark("hero.prefab.save.begin");
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, "Assets/Prefabs/Heroes/ArcCourier.prefab", out bool saved);
@@ -245,6 +260,19 @@ namespace SkyStrike.Editor
                 AssetDatabase.DeleteAsset(path); AssetDatabase.CreateAsset(ability, path); hero.abilities[i] = ability;
             }
             const string heroPath = "Assets/ScriptableObjects/Heroes/Ilyra.asset"; AssetDatabase.DeleteAsset(heroPath); AssetDatabase.CreateAsset(hero, heroPath); return hero;
+        }
+        static Material ParticleMaterial()
+        {
+            const string path = "Assets/Art/RuntimeParticles.mat";
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null)
+            {
+                Shader shader = Shader.Find("Universal Render Pipeline/Particles/Unlit");
+                if (shader == null) throw new InvalidOperationException("URP particle shader missing.");
+                material = new Material(shader); AssetDatabase.CreateAsset(material, path);
+            }
+            material.SetColor("_BaseColor", Color.white);
+            EditorUtility.SetDirty(material); return material;
         }
         static Material Material(string name, Color color)
         {

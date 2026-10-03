@@ -7,6 +7,7 @@ namespace SkyStrike.UI
     public sealed class AbilityIndicator : MonoBehaviour
     {
         public HeroDefinition Hero;
+        public Material IndicatorMaterial;
         public SkillButton[] Buttons;
         public Transform CameraTransform;
         LineRenderer line;
@@ -15,7 +16,7 @@ namespace SkyStrike.UI
         {
             GameObject child = new GameObject("Ability telegraph"); child.transform.SetParent(transform, false);
             line = child.AddComponent<LineRenderer>(); line.useWorldSpace = true; line.widthMultiplier = .09f;
-            line.material = new Material(Shader.Find("Universal Render Pipeline/Unlit")); line.enabled = false;
+            line.sharedMaterial = IndicatorMaterial; line.enabled = false;
             for (int i = 0; i < Buttons.Length; i++) { Buttons[i].AimChanged += Show; Buttons[i].AimEnded += Hide; }
         }
         void Show(int index, Vector2 aim, bool canceled)
