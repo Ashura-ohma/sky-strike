@@ -1,11 +1,13 @@
-# First vertical slice acceptance (all native/device items pending)
+# First vertical slice acceptance (native tests passed; Android/device gates pending)
 
 ## Required native gate
-- [ ] Package import and project compilation complete without errors
-- [ ] Scene generator creates Battle, URP assets, Animator, prefabs, ScriptableObjects and baked NavMesh
+- [x] Package import and project compilation complete without errors
+- [x] Scene generator creates Battle, URP assets, Animator, prefabs, ScriptableObjects and baked NavMesh
 - [ ] Real model imports at ~1.81 m, is visible, animated and faces intended forward direction
-- [ ] All 26 EditMode and 6 PlayMode tests pass in Unity
+- [x] All 26 EditMode and 8 PlayMode tests pass in Unity (2026-10-03; XML reports in Validation/)
 - [ ] Genuine ARM64 IL2CPP APK generated, artifact downloaded and installed
+
+Native scene smoke tests also passed actor/pool counts, AI navigation and joystick → attack animation → projectile → damage. This does not mark the phone-specific checklist below as passed. The user will validate on their own phone after an APK is available.
 
 ## Device flow
 - [ ] APK launch → battle → left joystick → target/chase → attack animation → projectile → damage/particles
