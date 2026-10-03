@@ -1,6 +1,6 @@
 # Sky Strike · Arc Courier (Unity migration checkpoint)
 
-**Status: native scene authored and 34 Unity tests passed. Android APK build and visual/device validation remain incomplete.**
+**Status: genuine Unity ARM64 Android development APK built and signature-verified. 34 native editor tests passed earlier. Physical-phone and visual validation remain pending.**
 
 This independent Unity 6/C# project lives under `unity/` on `unity-moba`. The old WebView game is retained byte-for-byte as a design reference; it is not loaded or embedded by the new game. `offline-moba` remains at `7ac6fc248cb3c67b19fba0c4b320255699c6840c`.
 
@@ -31,8 +31,11 @@ Controls: left floating joystick; ATTACK taps select/chase/fire; TARGET cycles e
 - PASS: joystick handler → player movement → Attack button → real Animator release → pooled projectile travel → exact damage
 - PASS: source asset skeletal weights, animation deformation and CC0 license audit
 - INCOMPLETE: graphical editor preview stopped repainting and native desktop control timed out; no valid visual-QA screenshot was captured
-- NOT RUN: Android APK build, phone installation, physical multitouch and frame-time/GC/thermal tests
+- PASS: Unity ARM64 IL2CPP compilation and Gradle APK packaging; Android package/signature verified (2026-10-03)
+- NOT RUN: phone installation, physical multitouch and frame-time/GC/thermal tests
 - No 60 FPS or finished-art claim. SWAT rig, reused clips and primitive map remain prototype placeholders
+
+APK: see the repository Releases page for the Unity Android prototype. Package `com.skystrike.arccourier.unity`, version 0.1.0, Android 8+ on ARM64. This is development/debug-signed and uses placeholder art.
 
 Test reports: [EditMode](Validation/EditMode.xml), [PlayMode](Validation/PlayMode.xml). These reports establish native editor tests, not Android/device acceptance.
 

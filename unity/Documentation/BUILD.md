@@ -42,3 +42,11 @@ Splitting `CreateAssets` and `CreateScene`, preserving imported clips, and savin
 A subsequent full graphical editor preview stopped repainting and cloud desktop control calls timed out. Valid graphical QA has not completed. Android build has not yet started, and no APK exists at this checkpoint. Resume with the supported headless `SkyStrike.Editor.BuildProject.Android` command only after confirming no other Unity process owns the project. Do not launch overlapping editor/build instances.
 
 The successful headless runs used `BEE_BUILD_THREADS=1`, `DOTNET_PROCESSOR_COUNT=2`, two-CPU affinity, `-job-worker-count 2`, `-batchmode` and `-nographics`. Do not delete the import cache unnecessarily. Test runs omit `-quit` so the native runner can finish and write XML.
+
+## First verified APK (2026-10-03)
+
+Unity completed Android ARM64 IL2CPP native compilation. Its first integrated Gradle invocation failed to resolve Android Gradle Plugin 8.7.2 because Java did not inherit the execution environment's existing proxy. The official Google Maven artifacts were independently reachable with HTTP 200.
+
+Packaging the same Unity-generated Gradle project with Gradle 8.11, the existing tool-provided proxy, the existing system Java truststore, two workers and TLS validation enabled completed successfully: `assembleDebug`, 53 tasks, exit 0. No untrusted repository, TLS bypass or gameplay fallback was used. This was external completion of Unity's generated Gradle project; the earlier Unity BuildReport itself recorded failure.
+
+APK verification: package `com.skystrike.arccourier.unity`, version 0.1.0, min SDK 26, target SDK 36, ARM64; APK v2 signature valid; `libunity.so` and `libil2cpp.so` present. See `Validation/android-build.json` for size and SHA-256. No physical-phone or 60 FPS claim is made.

@@ -1,0 +1,27 @@
+{
+  "date_utc": "2026-10-03",
+  "unity": "6000.0.58f2",
+  "revision": "92dee566b325",
+  "gameplay_source_commit": "de378f36fa519a57efe3088b385082dc0e2dbc28",
+  "package": "com.skystrike.arccourier.unity",
+  "version": "0.1.0",
+  "abi": "arm64-v8a",
+  "min_sdk": 26,
+  "target_sdk": 36,
+  "development_build": true,
+  "scripting_backend": "IL2CPP",
+  "apk_bytes": 35522598,
+  "apk_sha256": "b5f3faf8d72076a41fa170f967ba64ee376102b7a5b1f5dc3d7d31a34d657014",
+  "apk_signature_v2_verified": true,
+  "native_compilation": "Unity completed ARM64 IL2CPP compilation",
+  "packaging": "Unity-generated Gradle project: Gradle8.11 assembleDebug, 53 tasks, exit0",
+  "unity_integrated_build_report": "Failed at initial Gradle repository resolution; packaging completed separately with supported environment proxy settings",
+  "prior_native_tests": {
+    "editmode_passed": 26,
+    "playmode_passed": 8,
+    "failed": 0
+  },
+  "device_tested": false,
+  "measured_fps": null,
+  "render_assets": "Unity-generated Android URP prefilter/runtime settings committed with this build receipt"
+}

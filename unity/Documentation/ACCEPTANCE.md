@@ -5,7 +5,8 @@
 - [x] Scene generator creates Battle, URP assets, Animator, prefabs, ScriptableObjects and baked NavMesh
 - [ ] Real model imports at ~1.81 m, is visible, animated and faces intended forward direction
 - [x] All 26 EditMode and 8 PlayMode tests pass in Unity (2026-10-03; XML reports in Validation/)
-- [ ] Genuine ARM64 IL2CPP APK generated, artifact downloaded and installed
+- [x] Genuine ARM64 IL2CPP APK generated and APK v2 signature verified
+- [ ] Published artifact downloaded and installed on a physical phone
 
 Native scene smoke tests also passed actor/pool counts, AI navigation and joystick → attack animation → projectile → damage. This does not mark the phone-specific checklist below as passed. The user will validate on their own phone after an APK is available.
 
