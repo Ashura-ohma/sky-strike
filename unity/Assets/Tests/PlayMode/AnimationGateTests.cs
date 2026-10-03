@@ -117,7 +117,7 @@ namespace SkyStrike.Tests
             animator.Update(0);
             AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
             Assert.That(state.IsName("Attack1"), Is.True);
-            Assert.That(state.length, Is.GreaterThan(0), "Attack1 must use a real, non-empty animation clip.");
+            Assert.That(AttackClipDuration(), Is.GreaterThan(0));
             Assert.That(state.normalizedTime, Is.EqualTo(0).Within(.001f));
         }
 
@@ -126,8 +126,22 @@ namespace SkyStrike.Tests
             // Evaluate the generated controller and imported skeletal clip directly. Pausing
             // between evaluations makes the real Update gate independent of editor frame rate.
             animator.speed = 1;
-            animator.Update(animator.GetCurrentAnimatorStateInfo(0).length * normalizedDelta);
+            // StateInfo.length includes playback-speed scaling and becomes infinity while
+            // frozen. The actual imported clip duration stays finite at animator.speed = 0.
+            animator.Update(AttackClipDuration() * normalizedDelta);
             animator.speed = 0;
+        }
+
+        float AttackClipDuration()
+        {
+            AnimatorClipInfo[] clips = animator.GetCurrentAnimatorClipInfo(0);
+            Assert.That(clips, Has.Length.EqualTo(1), "Attack1 must evaluate its real skeletal clip.");
+            Assert.That(clips[0].clip, Is.Not.Null);
+            Assert.That(clips[0].clip.name, Is.EqualTo("Attack1"));
+            float duration = clips[0].clip.length;
+            Assert.That(float.IsNaN(duration) || float.IsInfinity(duration), Is.False);
+            Assert.That(duration, Is.GreaterThan(0), "Attack1 must use a real, non-empty animation clip.");
+            return duration;
         }
     }
 }

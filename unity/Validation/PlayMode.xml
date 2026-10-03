@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-03 12:54:34Z" end-time="2026-10-03 12:54:37Z" duration="2.9111101">
+  <test-suite type="TestSuite" id="1018" name="Sky Strike · Arc Courier" fullname="Sky Strike · Arc Courier" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-03 12:54:34Z" end-time="2026-10-03 12:54:37Z" duration="2.911110" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1012" name="SkyStrike.PlayModeTests.dll" fullname="/workspace/scratch/68ae2f41b4a7/unity-moba-work/unity/Library/ScriptAssemblies/SkyStrike.PlayModeTests.dll" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-03 12:54:34Z" end-time="2026-10-03 12:54:37Z" duration="2.901703" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="67445" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1013" name="SkyStrike" fullname="SkyStrike" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-03 12:54:34Z" end-time="2026-10-03 12:54:37Z" duration="2.901097" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1014" name="Tests" fullname="SkyStrike.Tests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-03 12:54:34Z" end-time="2026-10-03 12:54:37Z" duration="2.900762" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1001" name="AnimationGateTests" fullname="SkyStrike.Tests.AnimationGateTests" classname="SkyStrike.Tests.AnimationGateTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-03 12:54:34Z" end-time="2026-10-03 12:54:34Z" duration="0.153762" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1002" name="Attack1ReleasesOnlyWhenRealAnimatorCrossesNormalizedTimeGate" fullname="SkyStrike.Tests.AnimationGateTests.Attack1ReleasesOnlyWhenRealAnimatorCrossesNormalizedTimeGate" methodname="Attack1ReleasesOnlyWhenRealAnimatorCrossesNormalizedTimeGate" classname="SkyStrike.Tests.AnimationGateTests" runstate="Runnable" seed="467982157" result="Passed" start-time="2026-10-03 12:54:34Z" end-time="2026-10-03 12:54:34Z" duration="0.134125" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1003" name="CancelBeforeReleasePreventsCallbacksWhileRealAnimationContinues" fullname="SkyStrike.Tests.AnimationGateTests.CancelBeforeReleasePreventsCallbacksWhileRealAnimationContinues" methodname="CancelBeforeReleasePreventsCallbacksWhileRealAnimationContinues" classname="SkyStrike.Tests.AnimationGateTests" runstate="Runnable" seed="1766853002" result="Passed" start-time="2026-10-03 12:54:34Z" end-time="2026-10-03 12:54:34Z" duration="0.006716" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1004" name="BattleSceneSmokeTests" fullname="SkyStrike.Tests.BattleSceneSmokeTests" classname="SkyStrike.Tests.BattleSceneSmokeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-03 12:54:34Z" end-time="2026-10-03 12:54:36Z" duration="1.833907" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1005" name="GeneratedBattleStartsWithCompletePoolsAndNavigatingOpponent" fullname="SkyStrike.Tests.BattleSceneSmokeTests.GeneratedBattleStartsWithCompletePoolsAndNavigatingOpponent" methodname="GeneratedBattleStartsWithCompletePoolsAndNavigatingOpponent" classname="SkyStrike.Tests.BattleSceneSmokeTests" runstate="Runnable" seed="655760418" result="Passed" start-time="2026-10-03 12:54:34Z" end-time="2026-10-03 12:54:35Z" duration="0.864638" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1006" name="JoystickMovesPlayerAndAttackButtonReleasesPooledProjectileThatHits" fullname="SkyStrike.Tests.BattleSceneSmokeTests.JoystickMovesPlayerAndAttackButtonReleasesPooledProjectileThatHits" methodname="JoystickMovesPlayerAndAttackButtonReleasesPooledProjectileThatHits" classname="SkyStrike.Tests.BattleSceneSmokeTests" runstate="Runnable" seed="71808806" result="Passed" start-time="2026-10-03 12:54:35Z" end-time="2026-10-03 12:54:36Z" duration="0.967862" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1007" name="ProjectileTests" fullname="SkyStrike.Tests.ProjectileTests" classname="SkyStrike.Tests.ProjectileTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-03 12:54:36Z" end-time="2026-10-03 12:54:37Z" duration="0.908763" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1011" name="DestroyedTargetDoesNotConvertHomingShotToFreeShot" fullname="SkyStrike.Tests.ProjectileTests.DestroyedTargetDoesNotConvertHomingShotToFreeShot" methodname="DestroyedTargetDoesNotConvertHomingShotToFreeShot" classname="SkyStrike.Tests.ProjectileTests" runstate="Runnable" seed="1013275124" result="Passed" start-time="2026-10-03 12:54:36Z" end-time="2026-10-03 12:54:36Z" duration="0.301626" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1009" name="ManualShotCanHitElevatedTowerRoot" fullname="SkyStrike.Tests.ProjectileTests.ManualShotCanHitElevatedTowerRoot" methodname="ManualShotCanHitElevatedTowerRoot" classname="SkyStrike.Tests.ProjectileTests" runstate="Runnable" seed="84340127" result="Passed" start-time="2026-10-03 12:54:36Z" end-time="2026-10-03 12:54:36Z" duration="0.301257" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1010" name="OldProjectileCannotDamageRespawnedTarget" fullname="SkyStrike.Tests.ProjectileTests.OldProjectileCannotDamageRespawnedTarget" methodname="OldProjectileCannotDamageRespawnedTarget" classname="SkyStrike.Tests.ProjectileTests" runstate="Runnable" seed="1515912110" result="Passed" start-time="2026-10-03 12:54:36Z" end-time="2026-10-03 12:54:36Z" duration="0.002095" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1008" name="ProjectileAppliesDamageOnTravelNotLaunch" fullname="SkyStrike.Tests.ProjectileTests.ProjectileAppliesDamageOnTravelNotLaunch" methodname="ProjectileAppliesDamageOnTravelNotLaunch" classname="SkyStrike.Tests.ProjectileTests" runstate="Runnable" seed="1114565522" result="Passed" start-time="2026-10-03 12:54:36Z" end-time="2026-10-03 12:54:37Z" duration="0.301174" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: /dev/shm/codex-orbit-desktop/runtime-E1nQ6Z/config/unity3d/Sky Strike/Sky Strike · Arc Courier/TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

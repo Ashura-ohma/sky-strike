@@ -33,10 +33,12 @@ The workflow deliberately fails early if licensing is missing, before Unity test
 
 No 60 FPS, device compatibility, final art, or successful native-build claims are made.
 
-## Cloud-host checkpoint (2026-10-03)
+## Native validation checkpoint (2026-10-03)
 
-The official desktop Unity CLI route was able to resolve packages and compile the project assemblies. Full asset import/scene authoring subsequently stalled; no native tests or APK completed. Latest code also passes a separate C# reference compile, which does not replace runtime testing.
+The official licensed desktop Unity CLI successfully imported packages, compiled the project, authored assets, saved the Battle scene/NavMesh, and ran all native tests: 26 EditMode and 8 PlayMode passed, zero failures.
 
-The host had about 10 GB RAM, no swap, and about 4.1 GB RAM-backed shared/tmp usage. Resource-limited retries used `BEE_BUILD_THREADS=1`, `DOTNET_PROCESSOR_COUNT=2`, two-CPU affinity and `-job-worker-count 2`; the Editor still stopped making observable import progress. A process sample showed the Editor in disk-sleep state. This establishes the observed blocker, not a definitive root cause.
+Splitting `CreateAssets` and `CreateScene`, preserving imported clips, and saving the controller before prefab authoring recovered the earlier repeated authoring stall. Each stage completed with exit 0. This does not prove a unique root cause for the earlier resource contention.
 
-For resumption use a responsive licensed Unity 6000.0.58f2 host with sufficient RAM and disk I/O. Keep Bee sequential initially. Unity also documents `-refreshImportMode InProcess` for sequential asset imports; it has not been tested in this checkpoint. Complete scene authoring before the Animator integration tests, then run all native tests and build/install/inspect the APK. Never reuse an old web APK as a Unity artifact.
+A subsequent full graphical editor preview stopped repainting and cloud desktop control calls timed out. Valid graphical QA has not completed. Android build has not yet started, and no APK exists at this checkpoint. Resume with the supported headless `SkyStrike.Editor.BuildProject.Android` command only after confirming no other Unity process owns the project. Do not launch overlapping editor/build instances.
+
+The successful headless runs used `BEE_BUILD_THREADS=1`, `DOTNET_PROCESSOR_COUNT=2`, two-CPU affinity, `-job-worker-count 2`, `-batchmode` and `-nographics`. Do not delete the import cache unnecessarily. Test runs omit `-quit` so the native runner can finish and write XML.

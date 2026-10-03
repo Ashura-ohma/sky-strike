@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0231dba740f6fd285996fce377d0ec66, type: 3}
+  m_Name: Ilyra
+  m_EditorClassIdentifier: 
+  displayName: Ilyra, the Arc Courier
+  health: 920
+  mana: 280
+  movementSpeed: 6.1
+  attackRange: 7.2
+  acquisitionRange: 10
+  attackDamage: 46
+  attacksPerSecond: 1.35
+  abilities:
+  - {fileID: 11400000, guid: 5dd6e5762cad87608b3c5d15ff711877, type: 2}
+  - {fileID: 11400000, guid: cbfe36923b4f724f58baa8bac6570a83, type: 2}
+  - {fileID: 11400000, guid: 9e4be1ca4782af9c8a859a2f62c26e8f, type: 2}
+  - {fileID: 11400000, guid: 675e2c61144b8c4e994c02a94081c4df, type: 2}

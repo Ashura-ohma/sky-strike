@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using SkyStrike.Input;
 using UnityEngine;
@@ -84,13 +85,13 @@ namespace SkyStrike.Tests.Input
             FloatingJoystick joystick = NewJoystick();
             joystick.OnPointerDown(Pointer(17, 0f, 0f));
             joystick.OnDrag(Pointer(17, 100f, 0f));
-            joystick.SendMessage("OnApplicationFocus", false);
+            InvokeLifecycleCallback(joystick, "OnApplicationFocus", false);
             Assert.That(joystick.Value, Is.EqualTo(Vector2.zero));
             Assert.That(joystick.IsPressed, Is.False);
 
             joystick.OnPointerDown(Pointer(18, 0f, 0f));
             joystick.OnDrag(Pointer(18, 100f, 0f));
-            joystick.SendMessage("OnApplicationPause", true);
+            InvokeLifecycleCallback(joystick, "OnApplicationPause", true);
             Assert.That(joystick.Value, Is.EqualTo(Vector2.zero));
             Assert.That(joystick.IsPressed, Is.False);
         }
@@ -158,7 +159,7 @@ namespace SkyStrike.Tests.Input
             button.AimChanged += (id, aim, cancel) => aimEvents++;
             button.CastRequested += request => cast = request;
             button.OnPointerDown(Pointer(22, 200f, 100f));
-            button.SendMessage("Update");
+            InvokeLifecycleCallback(button, "Update");
             Assert.That(button.IsAiming, Is.True);
             Assert.That(aimEvents, Is.EqualTo(1));
             button.OnPointerUp(Pointer(22, 200f, 100f));
@@ -254,10 +255,10 @@ namespace SkyStrike.Tests.Input
             button.CastRequested += request => casts++;
             button.AimEnded += id => endings++;
             button.OnPointerDown(Pointer(22, 200f, 100f));
-            button.SendMessage("OnApplicationFocus", false);
+            InvokeLifecycleCallback(button, "OnApplicationFocus", false);
             button.OnPointerUp(Pointer(22, 200f, 100f));
             button.OnPointerDown(Pointer(23, 200f, 100f));
-            button.SendMessage("OnApplicationPause", true);
+            InvokeLifecycleCallback(button, "OnApplicationPause", true);
             button.OnPointerDown(Pointer(24, 200f, 100f));
             button.ResetInput();
             button.ResetInput();
@@ -309,6 +310,18 @@ namespace SkyStrike.Tests.Input
             Assert.That(modules[0].point, Is.Not.Null);
             Assert.That(modules[0].leftClick, Is.Not.Null);
             Assert.That(first.sendNavigationEvents, Is.False);
+        }
+
+        private static void InvokeLifecycleCallback(MonoBehaviour target, string methodName,
+            params object[] arguments)
+        {
+            // Exercise the managed callback body only. SendMessage routes through Unity's native
+            // behaviour dispatcher, which asserts ShouldRunBehaviour for these EditMode objects.
+            // Actual OS focus/pause delivery belongs in PlayMode/device integration coverage.
+            MethodInfo callback = target.GetType().GetMethod(methodName,
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(callback, Is.Not.Null, $"Missing lifecycle callback {methodName}");
+            callback.Invoke(target, arguments);
         }
 
         private FloatingJoystick NewJoystick()

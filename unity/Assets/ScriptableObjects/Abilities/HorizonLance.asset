@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48c3fd2ba99365940ba3b7561823dc13, type: 3}
+  m_Name: HorizonLance
+  m_EditorClassIdentifier: 
+  displayName: Horizon Lance
+  type: 6
+  effect: 3
+  range: 23
+  radius: 0.7
+  cooldown: 28
+  manaCost: 70
+  castTime: 0.18
+  backswing: 0.15
+  projectileSpeed: 18
+  damage: 210
+  aimAssistAngle: 8
+  aimAssistStrength: 0.2
+  allowAssistForManualAim: 0
+  animatorState: Ultimate
+  releaseNormalizedTime: 0.4
+  indicatorColor: {r: 0, g: 1, b: 1, a: 1}

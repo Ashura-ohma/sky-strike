@@ -1,1 +1,1 @@
-{"name":"SkyStrike.PlayModeTests","references":["SkyStrike.Runtime"],"optionalUnityReferences":["TestAssemblies"]}
+{"name":"SkyStrike.PlayModeTests","references":["SkyStrike.Runtime","UnityEngine.UI"],"optionalUnityReferences":["TestAssemblies"]}
