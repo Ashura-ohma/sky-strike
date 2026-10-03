@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1825">
+  <title>逐风战线</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="game-shell" aria-label="逐风战线离线游戏">
+    <canvas id="arena" aria-label="战场"></canvas>
+    <section id="start-screen" class="screen">
+      <div class="title-mark">逐风战线</div>
+      <p>单人离线 MOBA · 原创英雄试炼</p>
+      <div class="hero-card"><span class="hero-glyph">✦</span><div><b>星序法师</b><small>远程法术 · Q 技能 · R 奥义</small></div></div>
+      <button id="start-button" class="primary">开始对局</button>
+      <small class="hint">推动摇杆移动，按住普攻；击破防御塔后摧毁敌方水晶。</small>
+    </section>
+    <section id="end-screen" class="screen hidden">
+      <div id="result-title" class="title-mark"></div>
+      <p id="result-detail"></p>
+      <button id="restart-button" class="primary">再战一局</button>
+    </section>
+    <header class="hud">
+      <div class="health-box"><span>我方英雄</span><div class="meter"><i id="player-health"></i></div></div>
+      <div class="score-box"><span id="clock">00:00</span><b id="kills">击败 0</b></div>
+      <div class="health-box enemy-health"><span id="objective-label">敌方防御塔</span><div class="meter"><i id="objective-health"></i></div></div>
+    </header>
+    <div class="controls">
+      <div id="joystick" class="joystick" aria-label="移动摇杆"><i id="stick"></i></div>
+      <div class="action-buttons">
+        <button id="ult" class="skill" aria-label="奥义">R<small>14秒</small></button>
+        <button id="skill" class="skill" aria-label="星火">Q<small>5秒</small></button>
+        <button id="attack" class="attack" aria-label="普通攻击">普攻</button>
+      </div>
+    </div>
+    <div id="toast" class="toast"></div>
+  </main>
+  <script src="core.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
