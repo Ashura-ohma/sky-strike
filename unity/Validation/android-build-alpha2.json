@@ -1,0 +1,35 @@
+{
+  "built_at_utc": "2026-10-03T23:28:00Z",
+  "source_commit": "03864655d337c622d1534be6f725327ef91bf9ca",
+  "unity": "6000.0.58f2",
+  "package": "com.skystrike.arccourier.unity",
+  "version_name": "0.1.1",
+  "version_code": 2,
+  "min_sdk": 26,
+  "target_sdk": 36,
+  "architecture": "arm64-v8a",
+  "backend": "IL2CPP",
+  "development": true,
+  "apk_bytes": 35534322,
+  "sha256": "c1b61cb18715701a8ef344326c18b21e7261857811b42b57e95e861c2ca5c7f0",
+  "apk_v2_signature_verified": true,
+  "signing_certificate_matches_alpha1": true,
+  "tests": {
+    "edit_mode": {
+      "passed": 29,
+      "failed": 0
+    },
+    "play_mode": {
+      "passed": 8,
+      "failed": 0
+    }
+  },
+  "build": "Unity native compilation succeeded; integrated Gradle network resolution failed. Packaging the same generated project with the existing tool-provided proxy and system Java truststore succeeded: 53 tasks, 15 executed, 38 up-to-date, exit 0.",
+  "phone_validation": "Alpha1 screenshot used for diagnosis; alpha2 rendering and touch behavior require phone confirmation.",
+  "fixes": [
+    "Compensate imported wrist 100x scale for sidearm size and offset",
+    "Serialize URP particle material for sparks and indicators",
+    "Replace runtime CreatePrimitive with serialized meshes",
+    "Remove runtime Shader.Find"
+  ]
+}
