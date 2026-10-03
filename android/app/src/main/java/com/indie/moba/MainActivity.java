@@ -36,7 +36,13 @@ public final class MainActivity extends Activity {
             @Override
             public android.webkit.WebResourceResponse shouldInterceptRequest(
                     WebView view, android.webkit.WebResourceRequest request) {
-                return assetLoader.shouldInterceptRequest(request.getUrl());
+                android.webkit.WebResourceResponse response = assetLoader.shouldInterceptRequest(request.getUrl());
+                String path = request.getUrl().getPath();
+                // Older Android MIME maps may not recognize ES module file extensions.
+                if (response != null && path != null && (path.endsWith(".mjs") || path.endsWith(".js"))) {
+                    response.setMimeType("text/javascript");
+                }
+                return response;
             }
 
             @Override
