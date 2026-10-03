@@ -25,6 +25,9 @@ public final class MainActivity extends Activity {
 
         webView = new WebView(this);
         webView.setKeepScreenOn(true);
+        webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        webView.setHorizontalScrollBarEnabled(false);
+        webView.setVerticalScrollBarEnabled(false);
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);

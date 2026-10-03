@@ -11,3 +11,5 @@ local.properties
 .DS_Store
 
 android/app/src/main/assets/art/heroes-atlas.png
+android/app/src/main/assets/art/terrain-atlas-v5.png
+android/app/src/main/assets/art/skill-atlas-v5.png

@@ -1,6 +1,7 @@
 import {setupTactics,tickTactics,updateContracts,tacticalMethods} from './tactics.mjs';
 export {BRUSHES,SPELLS} from './tactics.mjs';
 import {EXTRA_HEROES,EXTRA_ITEMS,RUNES,DIFFICULTIES} from './content.mjs';
+import {analogDisplacement,resetMotion,moveWithCollision,waypointFor,separateUnits} from './movement.mjs';
 export const HEROES = {
   blade: { name: '苍岚', title: '逐风剑士', role: '近战 / 突进', color: 0x85e2ef, health: 860, mana: 280, attack: 57, power: 0, armor: 24, speed: 8.4, range: 3.5, rate: .72, skills: ['破风斩','回旋刃','风之护','天穹坠'] },
   mage: { name: '星璃', title: '星辉法师', role: '远程 / 法术', color: 0xc4a3ff, health: 650, mana: 420, attack: 42, power: 40, armor: 12, speed: 7.6, range: 8.8, rate: .9, skills: ['星辉弹','霜星阵','折光跃','陨星天降'] },
@@ -74,11 +75,20 @@ export class Arena {
       return rank(a)-rank(b)||dist(u,a)-dist(u,b);
     });return targets[0];
   }
+  moveSpeed(u,speed=u.speed){return speed*(this.time<u.slowUntil?.45:1)*(this.time<(u.stealthUntil||0)?1.25:1);}
+  displace(u,dx,dz){
+    if(Math.hypot(dx,dz)<1e-8)return;u._moveIntent=true;const before={x:u.x,z:u.z};
+    if(moveWithCollision(u,dx,dz,this.blockers)>1e-6){u.moving=true;u.face=direction(before,u);}
+  }
   walk(u,target,dt,speed=u.speed){
-    if(this.time<(u.stunUntil||0))return;const d=dist(u,target);if(d<.12)return;const v=direction(u,target);u.face=v;u.moving=true;
-    const step=Math.min(d,speed*(this.time<u.slowUntil?.45:1)*(this.time<(u.stealthUntil||0)?1.25:1)*dt);u.x+=v.x*step;u.z+=v.z*step;
-    u.x=clamp(u.x,-59,59);u.z=clamp(u.z,-59,59);
-    if(u.type==='hero')for(const b of BLOCKERS){const n=dist(u,b),min=b.r+.8;if(n<min){const a=direction(b,u);u.x=b.x+a.x*min;u.z=b.z+a.z*min;}}
+    if(this.time<(u.stunUntil||0))return;const d=dist(u,target);if(d<.001)return;
+    const v=direction(u,target),step=Math.min(d,this.moveSpeed(u,speed)*dt);this.displace(u,v.x*step,v.z*step);
+  }
+  navigate(u,target,dt,speed=u.speed){this.walk(u,u.type==='hero'?waypointFor(u,target,this.blockers,this.time):target,dt,speed);}
+  attackTarget(u,range=17){
+    const previous=this.byId(u.attackTargetId);
+    if(previous?.alive&&previous.team!==u.team&&dist(u,previous)<=range+previous.radius&&this.canSee(u.team,previous))return previous;
+    const target=this.nearestEnemy(u,range);u.attackTargetId=target?.id||null;return target;
   }
   vulnerable(base){return [0,1,2].some(l=>!this.units.some(v=>v.type==='tower'&&v.team===base.team&&v.lane===l&&v.alive));}
   damage(source,target,amount,spell=false,trueDamage=false){
@@ -110,8 +120,8 @@ export class Arena {
     while(h.xp>=need&&h.level<15){h.xp-=need;h.level++;h.skillPoints++;if(h.level===4)h.skillLevels[3]=1;h.maxHealth+=65;h.health=Math.min(h.maxHealth,h.health+100);h.attack+=4;h.power+=['mage','tide'].includes(h.kind)?8:2;h.maxMana+=15;h.mana=Math.min(h.maxMana,h.mana+45);need=80+h.level*40;if(h.isPlayer)this.event('level',{text:`升级至 ${h.level} 级${h.level===4?' · 终极技能已解锁':''}`});}if(h.level>=15)h.xp=0;
   }
   attack(u,target){
-    if(!target||u.cd>0||!target.alive||this.time<(u.stunUntil||0)||!this.canSee(u.team,target))return false;u.stealthUntil=0;u.revealedUntil=this.time+2;u.attackCount=(u.attackCount||0)+1;
-    u.face=direction(u,target);u.cd=(u.rate||.9)/(1+(u.haste||0));this.event('attack',{id:u.id,target:target.id});
+    if(!target||u.cd>0||!target.alive||target.team===u.team||dist(u,target)>u.range+target.radius+.001||this.time<(u.stunUntil||0)||!this.canSee(u.team,target))return false;u.stealthUntil=0;u.revealedUntil=this.time+2;u.attackCount=(u.attackCount||0)+1;
+    if(!u.moving)u.face=direction(u,target);u.attackFace=direction(u,target);u.cd=(u.rate||.9)/(1+(u.haste||0));this.event('attack',{id:u.id,target:target.id});
     let damage=u.attack*(this.time<(u.buffUntil||0)?1.18:1);if(u.empowered){damage*=1.35;u.empowered=false;}if(u.kind==='ranger'&&u.attackCount%3===0)damage*=1.5;if(this.rand()<(u.crit||0))damage*=1.75;
     if(u.range>4)this.shots.push({id:++this.nextId,source:u.id,team:u.team,target:target.id,x:u.x,z:u.z,dir:direction(u,target),speed:u.type==='tower'?25:30,damage,life:2,spell:false,radius:.65,kind:u.type==='tower'?'tower':'attack'});
     else this.damage(u,target,damage);return true;
@@ -171,46 +181,58 @@ export class Arena {
   spawnWave(){this.wave++;for(let team=0;team<2;team++)for(let lane=0;lane<3;lane++)for(let i=0;i<(this.wave%3===0?4:3);i++){
     const siege=i===3,empowered=this.dragonBuff[team]>this.time;const n=this.spawn({type:'minion',team,lane,...pointOnLane(lane,team===0?.025:.975),health:(siege?420:140)+this.wave*7+(empowered?100:0),attack:(siege?36:18)+this.wave+(empowered?12:0),armor:5,speed:5.2,range:i>=2?7:2.3,rate:1.1,radius:.7,siege,empowered,ranged:i>=2,pathIndex:team===0?1:LANES[lane].length-2});n.x+=(i-1)*1.3;n.z+=(i-1)*1.3;
   }}
-  laneAdvance(u,dt){const path=LANES[u.lane],goal=path[u.pathIndex];if(!goal)return;this.walk(u,goal,dt,u.speed);if(dist(u,goal)<2.5)u.pathIndex+=u.team===0?1:-1;}
+  laneAdvance(u,dt){const path=LANES[u.lane],goal=path[u.pathIndex];if(!goal)return;this.navigate(u,goal,dt,u.speed);if(dist(u,goal)<2.5)u.pathIndex+=u.team===0?1:-1;}
   tick(dt,input={x:0,z:0,attack:false}){
     if(this.winner!==null)return;dt=clamp(dt,0,.1);this.time+=dt;tickTactics(this,dt);
     if(this.command&&this.command.until<this.time)this.command=null;if(this.time>=this.waveAt){this.waveAt=this.time+18;this.spawnWave();if(this.wave===1)this.event('toast',{text:'兵线出发 · 跟随小兵推进，避免独自越塔'});}
     for(const u of this.units){
-      u.cd=Math.max(0,u.cd-dt);u.moving=false;if(u.shieldUntil<this.time)u.shield=0;
+      u._frameX=u.x;u._frameZ=u.z;u._moveIntent=false;u.cd=Math.max(0,u.cd-dt);u.moving=false;if(u.shieldUntil<this.time)u.shield=0;
       if(!u.alive){
-        if(u.type==='hero'||u.type==='monster'){u.respawn-=dt;if(u.respawn<=0){u.alive=true;u.health=u.maxHealth;u.mana=u.maxMana||0;const home=u.type==='hero'?BASES[u.team]:u.home;u.x=home.x;u.z=home.z;u.pathIndex=u.team===0?1:LANES[u.lane||0].length-2;u.skillCd?.fill(0);u.stunUntil=0;u.stealthUntil=0;u.revealedUntil=0;u.leashing=false;u.retreat=false;if(u.boss)this.event('objective',{text:'远古龙王已苏醒 · 击败可强化全队与兵线'});if(u.isPlayer)this.event('toast',{text:'英雄复活，重新加入战场'});}}
+        if(u.type==='hero'||u.type==='monster'){u.respawn-=dt;if(u.respawn<=0){u.alive=true;u.health=u.maxHealth;u.mana=u.maxMana||0;const home=u.type==='hero'?BASES[u.team]:u.home;u.x=home.x;u.z=home.z;u.pathIndex=u.team===0?1:LANES[u.lane||0].length-2;u.skillCd?.fill(0);u.stunUntil=0;u.stealthUntil=0;u.revealedUntil=0;u.leashing=false;u.retreat=false;u.moveGoal=null;u.attackTargetId=null;resetMotion(u);if(u.boss)this.event('objective',{text:'远古龙王已苏醒 · 击败可强化全队与兵线'});if(u.isPlayer)this.event('toast',{text:'英雄复活，重新加入战场'});}}
         continue;
       }
       if(u.type==='hero'){
         u.gold+=3*dt;this.addXp(u,4*dt);u.mana=Math.min(u.maxMana,u.mana+(2+(u.manaRegen||0)+(u.blueUntil>this.time?10:0))*dt);u.health=Math.min(u.maxHealth,u.health+(1.2+(u.regen||0)+(this.relic.active&&this.relic.owner===u.team?3:0))*dt);u.skillCd=u.skillCd.map(cd=>Math.max(0,cd-dt));
         if(dist(u,BASES[u.team])<9){u.health=Math.min(u.maxHealth,u.health+85*dt);u.mana=Math.min(u.maxMana,u.mana+65*dt);}
-        if(this.time<u.stunUntil)continue;if(u.isPlayer){
-          const moving=Math.hypot(input.x||0,input.z||0)>.05;
-          if(moving){u.recall=0;this.walk(u,{x:u.x+input.x*10,z:u.z+input.z*10},dt);u.moveGoal=null;}
-          else if(u.recall>0){u.recall-=dt;if(u.recall<=0){u.x=BASES[0].x;u.z=BASES[0].z;this.event('recall');}}
-          else if(u.moveGoal){this.walk(u,u.moveGoal,dt);if(dist(u,u.moveGoal)<.5)u.moveGoal=null;}
-          if(input.attack&&u.recall<=0){const target=this.nearestEnemy(u,17);if(target){if(dist(u,target)>u.range+target.radius){if(!moving)this.walk(u,target,dt);}else this.attack(u,target);}}
+        if(this.time<u.stunUntil){resetMotion(u);continue;}if(u.isPlayer){
+          const moving=Math.hypot(input.x||0,input.z||0)>.0001;
+          if(!input.attack)u.attackTargetId=null;
+          const target=input.attack&&u.recall<=0?this.attackTarget(u):null;
+          if(moving){
+            u.recall=0;u.moveGoal=null;u._navigation=null;
+            const delta=analogDisplacement(u,input.x||0,input.z||0,this.moveSpeed(u),dt);this.displace(u,delta.x,delta.z);
+          }else{
+            u.velocityX=0;u.velocityZ=0;
+            if(u.recall>0){u.recall-=dt;if(u.recall<=0){u.x=BASES[0].x;u.z=BASES[0].z;u.moveGoal=null;resetMotion(u);this.event('recall');}}
+            else if(u.moveGoal){
+              this.navigate(u,u.moveGoal,dt);
+              const reached=waypointFor(u,u.moveGoal,this.blockers,this.time);
+              if(dist(u,reached)<.15&&!u._navigation){u.moveGoal=null;resetMotion(u);}
+            }else if(target&&dist(u,target)>u.range+target.radius)this.navigate(u,target,dt);
+          }
+          if(target&&u.recall<=0)this.attack(u,target);
         }else{
           const magical=['mage','tide'].includes(u.kind),build=['boots',magical?'orb':'blade','armor',magical?'void':'infinity','heart',magical?'mercy':'vampire'];u.buildStep||=0;const item=ITEMS.find(i=>i.id===build[u.buildStep]);if(item&&this.buy(item.id,u).ok)u.buildStep++;if(u.skillPoints>0)this.upgradeSkill(u.level>=4&&u.skillLevels[3]<3?3:u.skillLevels.indexOf(Math.min(...u.skillLevels.slice(0,3))),u);const enemy=this.nearestEnemy(u,13),home=BASES[u.team];
-          if(u.health<u.maxHealth*.23||u.retreat){u.retreat=u.health<u.maxHealth*.8;this.walk(u,home,dt);}
-          else if(enemy){if(dist(u,enemy)>u.range+enemy.radius)this.walk(u,enemy,dt);else this.attack(u,enemy);if(enemy.type!=='tower'&&enemy.type!=='base'&&dist(u,enemy)<12){const aim=direction(u,enemy);if(u.skillCd[0]<=0)this.cast(u,0,aim);else if(u.skillCd[1]<=0&&dist(u,enemy)<8)this.cast(u,1,aim);else if(u.skillCd[3]<=0&&u.level>=4&&enemy.type==='hero')this.cast(u,3,aim);else if(u.health<u.maxHealth*.55&&u.skillCd[2]<=0)this.cast(u,2,aim);}}
-          else if(u.team===0&&this.command){const target=this.command.kind==='defend'?BASES[0]:this.command.kind==='dragon'?this.dragon:this.command.kind==='relic'?this.relic:{x:0,z:0};if(dist(u,target)>4)this.walk(u,target,dt);else if(target.boss&&target.alive)this.attack(u,target);}
-          else if(this.relic.active&&this.relic.owner===-1&&u.kind==='warden'){if(dist(u,this.relic)>2)this.walk(u,this.relic,dt);}
+          if(u.health<u.maxHealth*.23||u.retreat){u.retreat=u.health<u.maxHealth*.8;this.navigate(u,home,dt);}
+          else if(enemy){if(dist(u,enemy)>u.range+enemy.radius)this.navigate(u,enemy,dt);else this.attack(u,enemy);if(enemy.type!=='tower'&&enemy.type!=='base'&&dist(u,enemy)<12){const aim=direction(u,enemy);if(u.skillCd[0]<=0)this.cast(u,0,aim);else if(u.skillCd[1]<=0&&dist(u,enemy)<8)this.cast(u,1,aim);else if(u.skillCd[3]<=0&&u.level>=4&&enemy.type==='hero')this.cast(u,3,aim);else if(u.health<u.maxHealth*.55&&u.skillCd[2]<=0)this.cast(u,2,aim);}}
+          else if(u.team===0&&this.command){const target=this.command.kind==='defend'?BASES[0]:this.command.kind==='dragon'?this.dragon:this.command.kind==='relic'?this.relic:{x:0,z:0};if(dist(u,target)>4)this.navigate(u,target,dt);else if(target.boss&&target.alive)this.attack(u,target);}
+          else if(this.relic.active&&this.relic.owner===-1&&u.kind==='warden'){if(dist(u,this.relic)>2)this.navigate(u,this.relic,dt);}
           else this.laneAdvance(u,dt);
         }
       }else if(u.type==='minion'){
         const candidates=this.units.filter(t=>t.alive&&t.team!==u.team&&t.team!==2&&dist(u,t)<u.range+3+t.radius&&this.canSee(u.team,t)).sort((a,b)=>(a.type==='minion'?0:a.type==='hero'?1:2)-(b.type==='minion'?0:b.type==='hero'?1:2)||dist(u,a)-dist(u,b));
-        const target=candidates[0];if(target){if(dist(u,target)<=u.range+target.radius)this.attack(u,target);else this.walk(u,target,dt);}else this.laneAdvance(u,dt);
+        const target=candidates[0];if(target){if(dist(u,target)<=u.range+target.radius)this.attack(u,target);else this.navigate(u,target,dt);}else this.laneAdvance(u,dt);
       }else if(u.type==='tower'){
         const targets=this.units.filter(t=>t.alive&&t.team!==u.team&&t.team!==2&&!['tower','base'].includes(t.type)&&dist(u,t)<u.range+t.radius&&this.canSee(u.team,t)).sort((a,b)=>(a.type==='minion'?0:1)-(b.type==='minion'?0:1)||dist(u,a)-dist(u,b));this.attack(u,targets[0]);
       }else if(u.type==='monster'){
         const leash=u.boss?14:11;if(dist(u,u.home)>leash)u.leashing=true;
-        if(u.leashing){this.walk(u,u.home,dt,u.speed*1.8);u.health=Math.min(u.maxHealth,u.health+u.maxHealth*.35*dt);if(dist(u,u.home)<1){u.leashing=false;u.health=u.maxHealth;}continue;}
-        const target=this.units.filter(h=>h.alive&&h.type==='hero'&&this.canSee(2,h)&&dist(h,u.home)<leash&&dist(h,u)<(u.boss?13:8)).sort((a,b)=>dist(a,u)-dist(b,u))[0];if(target){if(dist(u,target)>u.range+target.radius)this.walk(u,target,dt);else this.attack(u,target);if(u.boss&&this.time>(u.slamAt||0)){u.slamAt=this.time+6;this.effects.push({id:++this.nextId,kind:'meteor',source:u.id,team:2,x:target.x,z:target.z,radius:6,life:1.6,maxLife:1.6,delay:1,damage:170});}}else if(dist(u,u.home)>1){this.walk(u,u.home,dt);u.health=Math.min(u.maxHealth,u.health+60*dt);}
+        if(u.leashing){this.navigate(u,u.home,dt,u.speed*1.8);u.health=Math.min(u.maxHealth,u.health+u.maxHealth*.35*dt);if(dist(u,u.home)<1){u.leashing=false;u.health=u.maxHealth;}continue;}
+        const target=this.units.filter(h=>h.alive&&h.type==='hero'&&this.canSee(2,h)&&dist(h,u.home)<leash&&dist(h,u)<(u.boss?13:8)).sort((a,b)=>dist(a,u)-dist(b,u))[0];if(target){if(dist(u,target)>u.range+target.radius)this.navigate(u,target,dt);else this.attack(u,target);if(u.boss&&this.time>(u.slamAt||0)){u.slamAt=this.time+6;this.effects.push({id:++this.nextId,kind:'meteor',source:u.id,team:2,x:target.x,z:target.z,radius:6,life:1.6,maxLife:1.6,delay:1,damage:170});}}else if(dist(u,u.home)>1){this.navigate(u,u.home,dt);u.health=Math.min(u.maxHealth,u.health+60*dt);}
       }
     }
     const mobiles=this.units.filter(u=>u.alive&&(u.type==='hero'||u.type==='minion'));
-    for(let i=0;i<mobiles.length;i++)for(let j=i+1;j<mobiles.length;j++){const u=mobiles[i],v=mobiles[j];if(u.type!==v.type)continue;const n=dist(u,v),min=u.type==='hero'?2:1;if(n<min&&n>.001){const push=Math.min((min-n)*.5,.12),dx=(v.x-u.x)/n*push,dz=(v.z-u.z)/n*push;u.x-=dx;u.z-=dz;v.x+=dx;v.z+=dz;}}
+    separateUnits(mobiles,dt,this.blockers);
+    for(const u of this.units)u.moving=u.alive&&Math.hypot(u.x-u._frameX,u.z-u._frameZ)>1e-5;
     for(const s of this.shots){
       s.life-=dt;if(s.life<=0)continue;const source=this.byId(s.source);if(!source){s.life=0;continue;}
       if(s.target){const target=this.byId(s.target);if(!target?.alive){s.life=0;continue;}s.dir=direction(s,target);const delta=s.speed*dt;if(dist(s,target)<delta+target.radius){this.damage(source,target,s.damage,s.spell);s.life=0;continue;}}

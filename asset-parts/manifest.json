@@ -1,0 +1,44 @@
+[
+  {
+    "output": "android/app/src/main/assets/art/heroes-atlas.png",
+    "parts": [
+      "asset-parts/heroes-atlas.00",
+      "asset-parts/heroes-atlas.01",
+      "asset-parts/heroes-atlas.02",
+      "asset-parts/heroes-atlas.03",
+      "asset-parts/heroes-atlas.04",
+      "asset-parts/heroes-atlas.05",
+      "asset-parts/heroes-atlas.06",
+      "asset-parts/heroes-atlas.07"
+    ],
+    "sha256": "7ba539ead4d9abc21340157f168a7befa17753fa07b95742aaa9ad80ce2424c3"
+  },
+  {
+    "output": "android/app/src/main/assets/art/terrain-atlas-v5.png",
+    "parts": [
+      "asset-parts/terrain-atlas-v5.00",
+      "asset-parts/terrain-atlas-v5.01",
+      "asset-parts/terrain-atlas-v5.02",
+      "asset-parts/terrain-atlas-v5.03",
+      "asset-parts/terrain-atlas-v5.04",
+      "asset-parts/terrain-atlas-v5.05",
+      "asset-parts/terrain-atlas-v5.06"
+    ],
+    "sha256": "7c6543d0101f47cd5a8537d18f07f80e835fd8d2a94423fa0504109404f48df8"
+  },
+  {
+    "output": "android/app/src/main/assets/art/skill-atlas-v5.png",
+    "parts": [
+      "asset-parts/skill-atlas-v5.00",
+      "asset-parts/skill-atlas-v5.01",
+      "asset-parts/skill-atlas-v5.02",
+      "asset-parts/skill-atlas-v5.03",
+      "asset-parts/skill-atlas-v5.04",
+      "asset-parts/skill-atlas-v5.05",
+      "asset-parts/skill-atlas-v5.06",
+      "asset-parts/skill-atlas-v5.07",
+      "asset-parts/skill-atlas-v5.08"
+    ],
+    "sha256": "b24a3d86be7c65f75b6be1afa6a2da30b1f751628194c75386a1741ec77fe7e7"
+  }
+]

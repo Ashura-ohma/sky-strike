@@ -2,7 +2,7 @@
     <application
         android:allowBackup="false"
         android:hardwareAccelerated="true"
-        android:label="逐风战境 V4"
+        android:label="逐风战境 V5"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="false">
