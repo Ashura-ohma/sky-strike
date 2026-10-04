@@ -129,7 +129,7 @@ namespace SkyStrike.Editor
             PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevelAuto;
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android, ScriptingImplementation.IL2CPP);
-            PlayerSettings.Android.useCustomKeystore = false; PlayerSettings.bundleVersion = "0.1.1"; PlayerSettings.Android.bundleVersionCode = 2;
+            PlayerSettings.Android.useCustomKeystore = false; PlayerSettings.bundleVersion = "0.1.2"; PlayerSettings.Android.bundleVersionCode = 3;
             PlayerSettings.colorSpace = ColorSpace.Linear;
             var settings = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/ProjectSettings.asset")[0]);
             settings.FindProperty("activeInputHandler").intValue = 1; settings.ApplyModifiedPropertiesWithoutUndo();
@@ -290,22 +290,30 @@ namespace SkyStrike.Editor
             GameObject canvasObject = new GameObject("Touch HUD", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             Canvas canvas = canvasObject.GetComponent<Canvas>(); canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             CanvasScaler scaler = canvasObject.GetComponent<CanvasScaler>(); scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize; scaler.referenceResolution = new Vector2(1280, 720); scaler.matchWidthOrHeight = .5f;
-            RectTransform move = Panel("Floating movement", canvas.transform, new Vector2(0, 0), new Vector2(.48f, .8f), Color.clear);
+            GameObject safeObject = new GameObject("Safe area", typeof(RectTransform), typeof(SkyStrike.Input.SafeAreaPanel));
+            RectTransform safe = safeObject.GetComponent<RectTransform>(); safe.SetParent(canvas.transform, false);
+            safe.anchorMin = Vector2.zero; safe.anchorMax = Vector2.one; safe.offsetMin = safe.offsetMax = Vector2.zero;
+            battle.HudRoot = safe;
+            RectTransform move = Panel("Floating movement", safe, new Vector2(0, 0), new Vector2(.48f, .8f), Color.clear);
             RectTransform pad = Panel("Joystick base", move, Vector2.zero, Vector2.zero, new Color(.1f, .2f, .3f, .55f)); pad.sizeDelta = new Vector2(180, 180); pad.GetComponent<Image>().raycastTarget = false;
             RectTransform handle = Panel("Joystick handle", pad, new Vector2(.5f, .5f), new Vector2(.5f, .5f), new Color(.4f, .8f, 1, .8f)); handle.sizeDelta = new Vector2(62, 62); handle.GetComponent<Image>().raycastTarget = false;
             battle.Joystick = move.gameObject.AddComponent<FloatingJoystick>(); battle.Joystick.Configure(pad, handle);
-            RectTransform cancel = Panel("Cancel cast", canvas.transform, new Vector2(.78f, .68f), new Vector2(.98f, .84f), new Color(.7f, .15f, .18f, .35f)); cancel.GetComponent<Image>().raycastTarget = false; Label("CANCEL", cancel, 22);
-            battle.Skills = new SkillButton[4];
+            RectTransform cancel = Panel("Cancel cast", safe, new Vector2(.78f, .68f), new Vector2(.98f, .84f), new Color(.7f, .15f, .18f, .35f)); cancel.GetComponent<Image>().raycastTarget = false; Label("CANCEL", cancel, 22);
+            battle.Skills = new SkillButton[4]; battle.SkillStatus = new Text[4];
             for (int i = 0; i < 4; i++)
             {
                 float left = .55f + i * .105f;
-                RectTransform button = Panel("Skill " + (i + 1), canvas.transform, new Vector2(left, .08f), new Vector2(left + .085f, .24f), new Color(.1f, .25f, .35f, .85f));
+                RectTransform button = Panel("Skill " + (i + 1), safe, new Vector2(left, .08f), new Vector2(left + .085f, .24f), new Color(.1f, .25f, .35f, .85f));
                 battle.Skills[i] = button.gameObject.AddComponent<SkillButton>(); battle.Skills[i].Configure(i, cancel, 100, .18f, 14);
-                Label((i + 1) + "\n" + new[] { "VOLLEY", "DASH", "TETHER", "LANCE" }[i], button, 18);
+                battle.SkillStatus[i] = Label((i + 1) + "\n" + new[] { "VOLLEY", "DASH", "TETHER", "LANCE" }[i], button, 18);
             }
-            RectTransform attack = Panel("Attack", canvas.transform, new Vector2(.84f, .3f), new Vector2(.98f, .54f), new Color(.7f, .4f, .12f, .9f)); battle.AttackButton = attack.gameObject.AddComponent<Button>(); Label("ATTACK", attack, 22);
-            RectTransform cycle = Panel("Switch target", canvas.transform, new Vector2(.67f, .33f), new Vector2(.8f, .43f), new Color(.2f, .3f, .4f, .8f)); battle.TargetButton = cycle.gameObject.AddComponent<Button>(); Label("TARGET", cycle, 18);
-            RectTransform status = Panel("Status", canvas.transform, new Vector2(.02f, .88f), new Vector2(.98f, .99f), new Color(0, 0, 0, .45f)); status.GetComponent<Image>().raycastTarget = false; battle.Status = Label("Loading", status, 20);
+            RectTransform attack = Panel("Attack", safe, new Vector2(.84f, .3f), new Vector2(.98f, .54f), new Color(.7f, .4f, .12f, .9f)); battle.AttackButton = attack.gameObject.AddComponent<Button>(); Label("ATTACK", attack, 22);
+            RectTransform cycle = Panel("Switch target", safe, new Vector2(.67f, .33f), new Vector2(.8f, .43f), new Color(.2f, .3f, .4f, .8f)); battle.TargetButton = cycle.gameObject.AddComponent<Button>(); Label("TARGET", cycle, 18);
+            RectTransform restart = Panel("Restart match", safe, new Vector2(.36f,.42f), new Vector2(.64f,.58f), new Color(.12f,.4f,.5f,.95f));
+            battle.RestartButton = restart.gameObject.AddComponent<Button>(); Label("PLAY AGAIN", restart, 24);
+            RectTransform targetInfo = Panel("Target status", safe, new Vector2(.28f,.8f), new Vector2(.72f,.86f), new Color(0,0,0,.35f));
+            targetInfo.GetComponent<Image>().raycastTarget = false; battle.TargetStatus = Label("No target", targetInfo, 16);
+            RectTransform status = Panel("Status", safe, new Vector2(.02f, .88f), new Vector2(.98f, .99f), new Color(0, 0, 0, .45f)); status.GetComponent<Image>().raycastTarget = false; battle.Status = Label("Loading", status, 20);
         }
         static RectTransform Panel(string name, Transform parent, Vector2 min, Vector2 max, Color color)
         {

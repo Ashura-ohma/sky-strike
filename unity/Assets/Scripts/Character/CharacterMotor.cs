@@ -45,14 +45,19 @@ namespace SkyStrike.Character
             if (direction.sqrMagnitude > .0001f)
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), TurnSpeed * Time.deltaTime);
         }
+        public void FaceImmediate(Vector3 direction)
+        {
+            direction.y = 0;
+            if (direction.sqrMagnitude > .0001f) transform.rotation = Quaternion.LookRotation(direction);
+        }
         public void Stop()
         {
             Moving = false;
-            if (agent == null || !agent.isOnNavMesh) return;
+            if (agent == null || !agent.enabled || !agent.isOnNavMesh) return;
             agent.isStopped = true; agent.ResetPath(); agent.velocity = Vector3.zero;
         }
         public void Stun(float seconds) { StunnedUntil = Mathf.Max(StunnedUntil, Time.time + seconds); Stop(); }
-        bool CanMove => agent != null && agent.isOnNavMesh && owner != null && owner.Alive && Time.time >= StunnedUntil;
+        bool CanMove => agent != null && agent.enabled && agent.isOnNavMesh && owner != null && owner.Alive && Time.time >= StunnedUntil;
         public void Dash(Vector3 direction, float distance)
         {
             Stop(); if (!CanMove) return;
@@ -60,7 +65,26 @@ namespace SkyStrike.Character
             if (NavMesh.Raycast(transform.position, end, out NavMeshHit hit, agent.areaMask)) end = hit.position;
             if (NavMesh.SamplePosition(end, out hit, .5f, agent.areaMask)) agent.Warp(hit.position);
         }
+        public void EnterDeath()
+        {
+            Stop();
+            // Disabled agents do not keep pushing live units away from a corpse.
+            if (agent != null) agent.enabled = false;
+        }
+        public void ResetForSpawn()
+        {
+            StunnedUntil = 0; Moving = false;
+            if (agent != null) agent.enabled = true;
+            Stop();
+        }
         public bool Warp(Vector3 position)
-        { return agent != null && agent.isOnNavMesh && agent.Warp(position); }
+        {
+            // Warp is also the recovery path for an agent that has fallen off its mesh.
+            if (agent == null || !agent.enabled || !gameObject.activeInHierarchy) return false;
+            if (!NavMesh.SamplePosition(position, out NavMeshHit hit, 1, agent.areaMask)) return false;
+            bool warped = agent.Warp(hit.position);
+            if (warped) Stop();
+            return warped;
+        }
     }
 }

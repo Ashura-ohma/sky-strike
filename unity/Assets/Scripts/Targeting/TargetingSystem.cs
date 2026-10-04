@@ -9,12 +9,16 @@ namespace SkyStrike.Targeting
         [SerializeField] Combatant owner;
         [SerializeField] TargetPriority priority;
         [SerializeField] bool heroesFirst = true;
+        int currentLife, manualLife;
         public Combatant Current { get; private set; }
         public Combatant Manual { get; private set; }
-        public void Configure(Combatant unit) { owner = unit; }
+        public void Configure(Combatant unit) { owner = unit; Clear(); }
         public bool SetManual(Combatant target, float acquisitionRange)
-        { if (!Valid(target, acquisitionRange)) return false; Manual = Current = target; return true; }
-        public void Clear() { Manual = Current = null; }
+        { if (!Valid(target, acquisitionRange)) return false; Manual = target; manualLife = target.LifeVersion; Remember(target); return true; }
+        public void Clear() { Manual = Current = null; currentLife = manualLife = 0; }
+        Combatant Remember(Combatant target)
+        { Current = target; currentLife = target != null ? target.LifeVersion : 0; return target; }
+        bool SameLife(Combatant target, int life) => target != null && target.LifeVersion == life;
         public bool Valid(Combatant target, float range)
         {
             return owner != null && owner.Alive && target != null && target.Alive &&
@@ -22,9 +26,20 @@ namespace SkyStrike.Targeting
         }
         public Combatant Acquire(float range, bool retainCurrent = true)
         {
-            if (Valid(Manual, range)) return Current = Manual;
+            if (SameLife(Manual, manualLife) && Valid(Manual, range)) return Remember(Manual);
             Manual = null;
-            if (retainCurrent && Valid(Current, range)) return Current;
+            if (retainCurrent && SameLife(Current, currentLife) && Valid(Current, range)) return Current;
+            return Remember(FindBest(range));
+        }
+        /// <summary>Find a skill target without changing the player's attack lock.</summary>
+        public Combatant Query(float range)
+        {
+            if (SameLife(Manual, manualLife) && Valid(Manual, range)) return Manual;
+            if (SameLife(Current, currentLife) && Valid(Current, range)) return Current;
+            return FindBest(range);
+        }
+        Combatant FindBest(float range)
+        {
             Combatant best = null; float bestScore = float.PositiveInfinity;
             for (int i = 0; i < Combatant.Active.Count; i++)
             {
@@ -37,7 +52,7 @@ namespace SkyStrike.Targeting
                     (Mathf.Approximately(score, bestScore) && candidate.GetInstanceID() < best.GetInstanceID()))
                 { best = candidate; bestScore = score; }
             }
-            return Current = best;
+            return best;
         }
         float Score(Combatant target)
         {
@@ -61,7 +76,9 @@ namespace SkyStrike.Targeting
                 if (candidateId < smallestId) { first = c; smallestId = candidateId; }
                 if (candidateId > id && candidateId < nextId) { result = c; nextId = candidateId; }
             }
-            return Manual = Current = result != null ? result : first;
+            Manual = result != null ? result : first;
+            manualLife = Manual != null ? Manual.LifeVersion : 0;
+            return Remember(Manual);
         }
     }
 }

@@ -30,14 +30,15 @@ namespace SkyStrike.Abilities
         public void ReduceCooldown(int index, float seconds) { if (index >= 0 && index < 4) readyAt[index] -= Mathf.Max(0, seconds); }
         public bool Cast(int index, Vector3 aim, bool smart)
         {
-            if (hero == null || index < 0 || index >= hero.abilities.Length || index >= 4 || !owner.Alive || pending != null || Time.time < motor.StunnedUntil) return false;
+            if (hero == null || index < 0 || index >= hero.abilities.Length || index >= 4 || !owner.Alive || pending != null || Time.time < motor.StunnedUntil || Time.timeScale <= 0 || !isActiveAndEnabled) return false;
             AbilityDefinition definition = hero.abilities[index];
             if (definition == null || CooldownRemaining(index) > 0 || owner.Mana < definition.manaCost) return false;
-            Combatant target = targeting.Acquire(definition.range);
+            Combatant target = definition.type == AbilityType.Dash || definition.type == AbilityType.Self
+                ? null : targeting.Query(definition.range);
             aim.y = 0;
             if (smart && target != null && definition.type != AbilityType.Dash) aim = target.HitPoint - owner.HitPoint;
-            if (aim.sqrMagnitude < .001f) aim = transform.forward;
             pointStrength = smart ? 1 : Mathf.Clamp01(aim.magnitude);
+            if (aim.sqrMagnitude < .001f) aim = transform.forward;
             aim.Normalize();
             if (!smart && definition.allowAssistForManualAim && target != null)
             {
@@ -48,7 +49,7 @@ namespace SkyStrike.Abilities
             if (definition.type == AbilityType.TargetUnit && target == null) return false;
             attacks.Cancel(); motor.Stop(); motor.Face(aim);
             pending = definition; pendingAim = aim; pendingTarget = definition.type == AbilityType.TargetUnit ? target : null; released = false; pendingLife = pendingTarget != null ? pendingTarget.LifeVersion : 0;
-            if (!gate.Play(definition.animatorState, definition.releaseNormalizedTime, 1, Release, Finish)) { pending = null; return false; }
+            if (!gate.Play(definition.animatorState, definition.releaseNormalizedTime, 1, Release, Finish, this)) { pending = null; return false; }
             owner.SpendMana(definition.manaCost); readyAt[index] = Time.time + definition.cooldown;
             return true;
         }
@@ -56,6 +57,7 @@ namespace SkyStrike.Abilities
         {
             if (pending == null || !owner.Alive || Time.time < motor.StunnedUntil) return;
             if (pending.type == AbilityType.TargetUnit && (pendingTarget == null || pendingTarget.LifeVersion != pendingLife || !targeting.Valid(pendingTarget, pending.range))) return;
+            motor.FaceImmediate(pendingAim);
             released = true;
             if (pending.type == AbilityType.Dash) motor.Dash(pendingAim, pending.range);
             else if (pending.type == AbilityType.Self || pending.type == AbilityType.AOE || pending.type == AbilityType.TargetPoint)
@@ -73,13 +75,21 @@ namespace SkyStrike.Abilities
                 pending.effect == AbilityEffect.RetrieveVolley);
         }
         void Finish() { pending = null; }
-        public void CancelForMovement()
+        public void CancelForMovement() => Cancel();
+        public void Cancel()
         {
             if (pending == null) return;
             // Cancel a cast without damage. A committed cast keeps mana/cooldown, preventing cancel-spam exploits.
-            gate.Cancel(); pending = null;
+            gate.CancelOwnedBy(this); pending = null; pendingTarget = null;
         }
-        void Update() { if (pending != null && (!owner.Alive || !gate.Busy || Time.time < motor.StunnedUntil)) pending = null; }
+        void OnDisable() => Cancel();
+        void Update()
+        {
+            if (pending == null) return;
+            if (!owner.Alive || !gate.IsOwnedBy(this) || Time.time < motor.StunnedUntil) { Cancel(); return; }
+            if (!released) motor.Face(pendingAim);
+        }
+        public float AcquisitionRange => hero != null ? hero.acquisitionRange : 0;
         public bool Casting => pending != null && !released;
     }
 }
